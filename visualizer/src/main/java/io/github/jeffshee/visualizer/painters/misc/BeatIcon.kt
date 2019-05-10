@@ -4,18 +4,19 @@ import android.graphics.*
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
-class BeatIcon(private val paint: Paint) : Painter() {
-    var startHz = 60
-    var endHz = 800
-    var baseR = 0.3f
-    var ampR = 0.3f
-    var peak = 200f
-    var bitmap: Bitmap? = null
+class BeatIcon(
+    var bitmap: Bitmap,
+    var startHz: Int = 60,
+    var endHz: Int = 800,
+    var xR: Float = .5f,
+    var yR: Float = .5f,
+    var baseR: Float = .3f,
+    var ampR: Float = .3f,
+    var peak: Float = 200f
+) : Painter() {
+
     private val matrix = Matrix()
     private val circle = GravityModel(0f)
-
-    private var width: Float = 0f
-    private var height: Float = 0f
 
     companion object {
         fun getCircledBitmap(bitmap: Bitmap): Bitmap {
@@ -32,9 +33,7 @@ class BeatIcon(private val paint: Paint) : Painter() {
     }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        width = canvas.width.toFloat()
-        height = canvas.height.toFloat()
-        bitmap?.apply bitmap@{
+        bitmap.apply bitmap@{
             val fft = helper.getFftMagnitudeRange(startHz, endHz)
             circle.update(canvas.width * (baseR + getEnergy(fft).toFloat() / peak * ampR))
             val radius = circle.height
@@ -42,11 +41,10 @@ class BeatIcon(private val paint: Paint) : Painter() {
                 postScale(radius / this@bitmap.width, radius / this@bitmap.width)
                 postTranslate(-radius / 2f, -radius / 2f)
             }
-            canvas.save()
-            canvas.translate(canvas.width / 2f, canvas.height / 2f)
-            canvas.drawBitmap(this, matrix, null)
+            drawHelper(canvas, "a", xR, yR) {
+                canvas.drawBitmap(this, matrix, null)
+            }
             matrix.reset()
-            canvas.restore()
         }
     }
 }

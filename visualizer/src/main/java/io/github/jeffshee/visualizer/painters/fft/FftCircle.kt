@@ -20,8 +20,8 @@ class FftCircle(
     var side: String = "a",
     var xR: Float = .5f,
     var yR: Float = .5f,
-    var baseR: Float = 0.6f,
-    var ampR: Float = 0.3f,
+    var baseR: Float = .6f,
+    var ampR: Float = .3f,
     var peak: Float = 200f,
     var rpm: Float = 1f
 ) : Painter() {
@@ -38,7 +38,6 @@ class FftCircle(
 
         val angle = 2 * PI.toFloat() / barNum
         val pts = FloatArray(4 * barNum)
-
 
         drawHelper(canvas, side, xR, yR, {
             bars.forEachIndexed { index, bar ->

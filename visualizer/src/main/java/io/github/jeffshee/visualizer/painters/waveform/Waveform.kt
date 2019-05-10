@@ -14,7 +14,6 @@ class Waveform(
     var startHz: Int = 0,
     var endHz: Int = 2000,
     var sliceNum: Int = 256,
-    var side: String = "a",
     var xR: Float = 0f,
     var yR: Float = .5f,
     var wR: Float = 1f,
@@ -37,7 +36,7 @@ class Waveform(
         path.moveTo(0f, (-wave[0].toUByte().toInt() + 128f) * ampR)
         for (i in 1..sliceNum)
             path.lineTo(sliceWidth * i, (-wave[point * i].toUByte().toInt() + 128f) * ampR)
-        drawHelper(canvas, side, xR, yR) { canvas.drawPath(path, paint) }
+        drawHelper(canvas, "a", xR, yR) { canvas.drawPath(path, paint) }
         path.reset()
     }
 }
