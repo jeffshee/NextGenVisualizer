@@ -69,7 +69,7 @@ class VisualizerHelper(sessionId: Int) {
         runnable = object : Runnable {
             override fun run() {
                 Log.d("Fft", getFft().contentToString())
-                Log.d("Wave", getWave().contentToString())
+                Log.d("Waveform", getWave().contentToString())
                 Log.d("FftM", getFftMagnitudeF().contentToString())
                 handler.postDelayed(this, 1000)
             }

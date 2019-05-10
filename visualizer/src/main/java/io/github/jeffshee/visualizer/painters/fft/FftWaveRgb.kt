@@ -1,6 +1,7 @@
-package io.github.jeffshee.visualizer.painters
+package io.github.jeffshee.visualizer.painters.fft
 
 import android.graphics.*
+import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
 class FftWaveRgb(

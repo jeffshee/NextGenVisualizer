@@ -1,6 +1,7 @@
-package io.github.jeffshee.visualizer.painters
+package io.github.jeffshee.visualizer.painters.misc
 
 import android.graphics.*
+import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
 class BeatIcon(private val paint: Paint) : Painter() {

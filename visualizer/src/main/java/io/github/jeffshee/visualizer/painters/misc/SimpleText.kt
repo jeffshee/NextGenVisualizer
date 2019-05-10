@@ -1,7 +1,8 @@
-package io.github.jeffshee.visualizer.painters
+package io.github.jeffshee.visualizer.painters.misc
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
 class SimpleText(

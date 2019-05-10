@@ -1,9 +1,10 @@
-package io.github.jeffshee.visualizer.painters
+package io.github.jeffshee.visualizer.painters.fft
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
 class FftWave(

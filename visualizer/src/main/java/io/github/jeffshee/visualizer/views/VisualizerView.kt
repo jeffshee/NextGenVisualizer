@@ -8,7 +8,7 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.View
 import io.github.jeffshee.visualizer.painters.Painter
-import io.github.jeffshee.visualizer.painters.SimpleText
+import io.github.jeffshee.visualizer.painters.misc.SimpleText
 import io.github.jeffshee.visualizer.utils.FrameManager
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
@@ -40,7 +40,9 @@ class VisualizerView : View {
     }
 
     private fun onCreateView() {
-        simpleText = SimpleText(Paint().apply { color = Color.WHITE;textSize = dp2px(12f) })
+        simpleText = SimpleText(Paint().apply {
+            color = Color.WHITE;textSize = dp2px(12f)
+        })
         val handler = Handler()
         val runnable = object : Runnable {
             override fun run() {

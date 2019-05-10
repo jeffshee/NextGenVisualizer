@@ -124,6 +124,33 @@ abstract class Painter {
         canvas.restore()
     }
 
+    fun drawHelper(
+        canvas: Canvas,
+        side: String,
+        xR: Float,
+        yR: Float,
+        da: () -> Unit,
+        db: () -> Unit,
+        dab: () -> Unit
+    ) {
+        canvas.save()
+        when (side) {
+            "a" -> {
+                canvas.translate(canvas.width * xR, canvas.height * yR)
+                da()
+            }
+            "b" -> {
+                canvas.translate(canvas.width * xR, canvas.height * yR)
+                db()
+            }
+            "ab" -> {
+                canvas.translate(canvas.width * xR, canvas.height * yR)
+                dab()
+            }
+        }
+        canvas.restore()
+    }
+
     class GravityModel(
         var height: Float = 0f,
         var dy: Float = 0f,
