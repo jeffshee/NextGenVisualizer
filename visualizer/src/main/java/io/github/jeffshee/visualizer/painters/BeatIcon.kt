@@ -34,7 +34,7 @@ class BeatIcon(private val paint: Paint) : Painter() {
         width = canvas.width.toFloat()
         height = canvas.height.toFloat()
         bitmap?.apply bitmap@{
-            val fft = helper.getFftMagnitudeRange(helper, startHz, endHz)
+            val fft = helper.getFftMagnitudeRange(startHz, endHz)
             circle.update(canvas.width * (baseR + getEnergy(fft).toFloat() / peak * ampR))
             val radius = circle.height
             matrix.apply {

@@ -23,10 +23,10 @@ class FftCircle(private val paint: Paint) : Painter() {
     private var rot: Float = 0f
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        val fft = helper.getFftMagnitudeRange(helper, startHz, endHz)
+        val fft = helper.getFftMagnitudeRange(startHz, endHz)
         if (isQuiet(fft)) return
-        val fftBeat = helper.getFftMagnitudeRange(helper, beatStartHz, beatEndHz)
-        val psf = interpolateFftBar(patchCircle(fft), barNum, interpolator)
+        val fftBeat = helper.getFftMagnitudeRange(beatStartHz, beatEndHz)
+        val psf = interpolateFftBar(getCircleFft(fft), barNum, interpolator)
         width = canvas.width.toFloat()
         height = canvas.height.toFloat()
 

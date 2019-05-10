@@ -34,22 +34,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         helper = VisualizerHelper(0)
+//        visual.setPainterList(
+//            helper, listOf(
+//                //FftWaveRgb(Paint.ANTI_ALIAS_FLAG),
+//                //FftBar(Paint().apply { color = Color.DKGRAY;style = Paint.Style.STROKE;strokeWidth = 2f }),
+//                FftLine(yR = .5f),
+//                Wave(Paint().apply {
+//                    color = Color.argb(100, 255, 255, 255);style = Paint.Style.STROKE;strokeWidth = 4f
+//                }),
+//                BeatIcon(Paint()).apply {
+//                    bitmap = BeatIcon.getCircledBitmap(
+//                        BitmapFactory.decodeResource(resources, R.drawable.chino512)
+//                    )
+//                },
+//                FftCircle(Paint().apply {
+//                    color = Color.argb(200, 255, 255, 255);style = Paint.Style.STROKE;strokeWidth = 8f
+//                })
+//            )
+//        )
         visual.setPainterList(
-            helper, listOf(
-                FftWaveRGB(Paint(Paint.ANTI_ALIAS_FLAG)),
-                //FftBar(Paint().apply { color = Color.DKGRAY;style = Paint.Style.STROKE;strokeWidth = 2f }),
-                Wave(Paint().apply {
-                    color = Color.argb(100, 255, 255, 255);style = Paint.Style.STROKE;strokeWidth = 4f
-                }),
-                BeatIcon(Paint()).apply {
-                    bitmap = BeatIcon.getCircledBitmap(
-                        BitmapFactory.decodeResource(resources, R.drawable.chino512)
-                    )
-                },
-                FftCircle(Paint().apply {
-                    color = Color.argb(200, 255, 255, 255);style = Paint.Style.STROKE;strokeWidth = 8f
-                })
-            )
+            helper, listOf(FftBar())
         )
     }
 

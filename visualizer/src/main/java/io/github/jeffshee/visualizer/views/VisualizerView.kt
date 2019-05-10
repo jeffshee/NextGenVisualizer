@@ -20,6 +20,8 @@ class VisualizerView : View {
     private lateinit var simpleText: SimpleText
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
+    var showFps = true
+
     constructor(context: Context) : super(context) {
         onCreateView()
     }
@@ -51,10 +53,12 @@ class VisualizerView : View {
 
     override fun onDraw(canvas: Canvas?) {
         setLayerType(LAYER_TYPE_HARDWARE, paint)
-        canvas?.apply {
-            painterList.forEach { it.draw(canvas, helper) }
-            simpleText.text = "FPS: ${frameManager.fps()}"
-            simpleText.draw(canvas, helper)
+        if (showFps) {
+            canvas?.apply {
+                painterList.forEach { it.draw(canvas, helper) }
+                simpleText.text = "FPS: ${frameManager.fps()}"
+                simpleText.draw(canvas, helper)
+            }
         }
         frameManager.tick()
         super.onDraw(canvas)

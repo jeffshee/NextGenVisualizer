@@ -16,7 +16,7 @@ class Wave(private val paint: Paint) : Painter() {
     @ExperimentalUnsignedTypes
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         // TODO artifacts at the edge of the screen
-        val fft = helper.getFftMagnitudeRange(helper, startHz, endHz)
+        val fft = helper.getFftMagnitudeRange(startHz, endHz)
         if (isQuiet(fft)) return
         width = canvas.width.toFloat()
         height = canvas.height.toFloat()

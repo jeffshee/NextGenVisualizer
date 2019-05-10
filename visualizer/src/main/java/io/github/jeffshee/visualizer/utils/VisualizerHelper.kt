@@ -51,10 +51,10 @@ class VisualizerHelper(sessionId: Int) {
         return fftMF
     }
 
-    fun getFftMagnitudeRange(helper: VisualizerHelper, startHz: Int, endHz: Int): DoubleArray {
+    fun getFftMagnitudeRange(startHz: Int, endHz: Int): DoubleArray {
         val sIndex = hzToFftIndex(startHz)
         val eIndex = hzToFftIndex(endHz)
-        return helper.getFftMagnitude().copyOfRange(sIndex, eIndex)
+        return getFftMagnitude().copyOfRange(sIndex, eIndex)
     }
 
     /**
