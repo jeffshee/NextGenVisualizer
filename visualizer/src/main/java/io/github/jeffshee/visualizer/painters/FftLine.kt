@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
-class FftBar(
+class FftLine(
     var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE;style = Paint.Style.STROKE;strokeWidth = 2f
     },
@@ -40,10 +40,25 @@ class FftBar(
         }
 
         val barWidth = width / barNum
-        bars.forEachIndexed { index, bar -> bar.update(psf.value(index.toDouble()).toFloat() * ampR) }
-        drawHelper(canvas, side, xR, yR) {
+        val pts = FloatArray(4 * barNum)
+        drawHelper(canvas, side, xR, yR, {
             bars.forEachIndexed { index, bar ->
-                canvas.drawRect(barWidth * index, -bar.height, barWidth * (index + 1), 0f, paint) }
-        }
+                bar.update(psf.value(index.toDouble()).toFloat() * ampR)
+                pts[4 * index] = barWidth * (index + .5f)
+                pts[4 * index + 1] = -bar.height
+                pts[4 * index + 2] = barWidth * (index + .5f)
+                pts[4 * index + 3] = 0f
+            }
+            canvas.drawLines(pts, paint)
+        }, {
+            bars.forEachIndexed { index, bar ->
+                bar.update(psf.value(index.toDouble()).toFloat() * ampR)
+                pts[4 * index] = barWidth * (index + .5f)
+                pts[4 * index + 1] = -bar.height
+                pts[4 * index + 2] = barWidth * (index + .5f)
+                pts[4 * index + 3] = bar.height
+            }
+            canvas.drawLines(pts, paint)
+        })
     }
 }

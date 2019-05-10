@@ -20,8 +20,8 @@ abstract class Painter {
         val xRaw = DoubleArray(nRaw) { (it * barNum).toDouble() / (nRaw - 1) }
         val psf: PolynomialSplineFunction
         psf = when (interpolator) {
-            "li" -> li.interpolate(xRaw, yRaw)
-            "sp" -> sp.interpolate(xRaw, yRaw)
+            "li", "linear" -> li.interpolate(xRaw, yRaw)
+            "sp", "spline" -> sp.interpolate(xRaw, yRaw)
             else -> li.interpolate(xRaw, yRaw)
         }
         return psf
@@ -38,8 +38,8 @@ abstract class Painter {
         gravityModels.forEachIndexed { index, bar -> yRaw[index] = bar.height.toDouble() }
         val psf: PolynomialSplineFunction
         psf = when (interpolator) {
-            "li" -> li.interpolate(xRaw, yRaw)
-            "sp" -> sp.interpolate(xRaw, yRaw)
+            "li", "linear" -> li.interpolate(xRaw, yRaw)
+            "sp", "spline" -> sp.interpolate(xRaw, yRaw)
             else -> li.interpolate(xRaw, yRaw)
         }
         return psf
@@ -64,7 +64,7 @@ abstract class Painter {
         return floatArrayOf(x, y)
     }
 
-    fun patchCircle(fft: DoubleArray): DoubleArray {
+    fun getCircleFft(fft: DoubleArray): DoubleArray {
         val patched = DoubleArray(fft.size)
         fft.forEachIndexed { index, d ->
             if (index == fft.lastIndex) patched[index] = fft[0]
@@ -73,10 +73,62 @@ abstract class Painter {
         return patched
     }
 
-    class GravityModel(var height: Float) {
-        var dy: Float = 0f
-        var ay: Float = 2f
+    fun getMirrorFft(fft: DoubleArray): DoubleArray {
+        val patched = DoubleArray(fft.size * 2)
+        fft.forEachIndexed { index, d ->
+            patched[fft.lastIndex - index] = d
+            patched[fft.size + index] = d
+        }
+        return patched
+    }
 
+    fun drawHelper(canvas: Canvas, side: String, xR: Float, yR: Float, d: () -> Unit) {
+        canvas.save()
+        when (side) {
+            "a" -> {
+                canvas.translate(canvas.width * xR, canvas.height * yR)
+                d()
+            }
+            "b" -> {
+                canvas.scale(1f, -1f, canvas.width / 2f, canvas.height / 2f)
+                canvas.translate(canvas.width * xR, canvas.height * yR)
+                d()
+            }
+            "ab" -> {
+                canvas.translate(canvas.width * xR, canvas.height * yR)
+                d()
+                canvas.scale(1f, -1f)
+                d()
+            }
+        }
+        canvas.restore()
+    }
+
+    fun drawHelper(canvas: Canvas, side: String, xR: Float, yR: Float, d: () -> Unit, dab: () -> Unit) {
+        canvas.save()
+        when (side) {
+            "a" -> {
+                canvas.translate(canvas.width * xR, canvas.height * yR)
+                d()
+            }
+            "b" -> {
+                canvas.scale(1f, -1f, canvas.width / 2f, canvas.height / 2f)
+                canvas.translate(canvas.width * xR, canvas.height * yR)
+                d()
+            }
+            "ab" -> {
+                canvas.translate(canvas.width * xR, canvas.height * yR)
+                dab()
+            }
+        }
+        canvas.restore()
+    }
+
+    class GravityModel(
+        var height: Float = 0f,
+        var dy: Float = 0f,
+        var ay: Float = 2f
+    ) {
         fun update(h: Float) {
             if (h > height) {
                 height = h
