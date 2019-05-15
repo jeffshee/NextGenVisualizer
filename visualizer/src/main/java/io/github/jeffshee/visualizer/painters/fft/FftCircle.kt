@@ -39,59 +39,61 @@ class FftCircle(
         val angle = 2 * PI.toFloat() / barNum
         val pts = FloatArray(4 * barNum)
 
-        drawHelper(canvas, side, xR, yR, {
-            bars.forEachIndexed { index, bar ->
-                bar.update(psf.value(index.toDouble()).toFloat())
-                val start =
-                    toCartesian(
-                        canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR),
-                        angle * index + rot
-                    )
-                val stop = toCartesian(
-                    canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR) + bar.height,
-                    angle * index + rot
-                )
-                pts[4 * index] = start[0];pts[4 * index + 1] = start[1]
-                pts[4 * index + 2] = stop[0];pts[4 * index + 3] = stop[1]
-            }
-            canvas.drawLines(pts, paint)
-        }, {
-            bars.forEachIndexed { index, bar ->
-                bar.update(psf.value(index.toDouble()).toFloat())
-                val start =
-                    toCartesian(
-                        canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR),
-                        angle * index + rot
-                    )
-                val stop = toCartesian(
-                    canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR) - bar.height,
-                    angle * index + rot
-                )
-                pts[4 * index] = start[0];pts[4 * index + 1] = start[1]
-                pts[4 * index + 2] = stop[0];pts[4 * index + 3] = stop[1]
-            }
-            canvas.drawLines(pts, paint)
-        }, {
-            bars.forEachIndexed { index, bar ->
-                bar.update(psf.value(index.toDouble()).toFloat())
-                val start =
-                    toCartesian(
+        rotateHelper(canvas, rot, xR, yR) {
+            drawHelper(canvas, side, xR, yR, {
+                bars.forEachIndexed { index, bar ->
+                    bar.update(psf.value(index.toDouble()).toFloat())
+                    val start =
+                        toCartesian(
+                            canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR),
+                            angle * index
+                        )
+                    val stop = toCartesian(
                         canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR) + bar.height,
-                        angle * index + rot
+                        angle * index
                     )
-                val stop = toCartesian(
-                    canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR) - bar.height,
-                    angle * index + rot
-                )
-                pts[4 * index] = start[0];pts[4 * index + 1] = start[1]
-                pts[4 * index + 2] = stop[0];pts[4 * index + 3] = stop[1]
-            }
-            canvas.drawLines(pts, paint)
-        })
+                    pts[4 * index] = start[0];pts[4 * index + 1] = start[1]
+                    pts[4 * index + 2] = stop[0];pts[4 * index + 3] = stop[1]
+                }
+                canvas.drawLines(pts, paint)
+            }, {
+                bars.forEachIndexed { index, bar ->
+                    bar.update(psf.value(index.toDouble()).toFloat())
+                    val start =
+                        toCartesian(
+                            canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR),
+                            angle * index
+                        )
+                    val stop = toCartesian(
+                        canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR) - bar.height,
+                        angle * index
+                    )
+                    pts[4 * index] = start[0];pts[4 * index + 1] = start[1]
+                    pts[4 * index + 2] = stop[0];pts[4 * index + 3] = stop[1]
+                }
+                canvas.drawLines(pts, paint)
+            }, {
+                bars.forEachIndexed { index, bar ->
+                    bar.update(psf.value(index.toDouble()).toFloat())
+                    val start =
+                        toCartesian(
+                            canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR) + bar.height,
+                            angle * index
+                        )
+                    val stop = toCartesian(
+                        canvas.width / 2f * (baseR + getEnergy(fftBeat).toFloat() / peak * ampR) - bar.height,
+                        angle * index
+                    )
+                    pts[4 * index] = start[0];pts[4 * index + 1] = start[1]
+                    pts[4 * index + 2] = stop[0];pts[4 * index + 3] = stop[1]
+                }
+                canvas.drawLines(pts, paint)
+            })
+        }
+
         if (rpm != 0f) {
-            // rpm -> rad/frame, let fps = 60
-            rot += rpm * 2 * PI.toFloat() / 3600
-            rot %= (2 * PI.toFloat())
+            rot += rpm / 10f
+            rot %= 360f
         }
     }
 

@@ -82,6 +82,13 @@ abstract class Painter {
         return patched
     }
 
+    fun rotateHelper(canvas: Canvas, rot: Float, xR: Float, yR: Float, d: () -> Unit) {
+        canvas.save()
+        canvas.rotate(rot, canvas.width * xR, canvas.height * yR)
+        d()
+        canvas.restore()
+    }
+
     fun drawHelper(canvas: Canvas, side: String, xR: Float, yR: Float, d: () -> Unit) {
         canvas.save()
         when (side) {

@@ -19,6 +19,7 @@ class FftBar(
     var xR: Float = 0f,
     var yR: Float = 1f,
     var wR: Float = 1f,
+    var gapX: Float = 0f,
     var ampR: Float = 1f
 ) : Painter() {
 
@@ -40,11 +41,16 @@ class FftBar(
             }
         }
 
-        val barWidth = width / barNum
+        val barWidth = (width - (barNum + 1) * gapX) / barNum
         bars.forEachIndexed { index, bar -> bar.update(psf.value(index.toDouble()).toFloat() * ampR) }
         drawHelper(canvas, side, xR, yR) {
             bars.forEachIndexed { index, bar ->
-                canvas.drawRect(barWidth * index, -bar.height, barWidth * (index + 1), 0f, paint) }
+                canvas.drawRect(
+                    barWidth * index + gapX * (index + 1), -bar.height,
+                    barWidth * (index + 1) + gapX * (index + 1), 0f,
+                    paint
+                )
+            }
         }
     }
 }
