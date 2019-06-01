@@ -20,45 +20,64 @@ class FftCircleWave(
     var xR: Float = .5f,
     var yR: Float = .5f,
     var baseR: Float = .4f,
-    var ampR: Float = .6f,
-    var rpm: Float = 1f
-) : Painter() {
+    var ampR: Float = .6f
+    ) : Painter() {
 
     private val path = Path()
     private var points = Array(0) { GravityModel() }
-    private var rot: Float = 0f
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         val fft = helper.getFftMagnitudeRange(startHz, endHz)
 
-        val circleFft = getCircleFft(fft)
+        val circleFft = this.getCircleFft(fft)
         if (points.size != circleFft.size) points = Array(circleFft.size) { GravityModel(0f) }
         points.forEachIndexed { index, bar -> bar.update(circleFft[index].toFloat() * ampR) }
-        val psf = interpolateFftWave(points, sliceNum, interpolator)
+        val psf = interpolateFftCircle(points, sliceNum, interpolator)
 
         val angle = 2 * PI.toFloat() / sliceNum
 
-        rotateHelper(canvas, rot, xR, yR) {
-            drawHelper(canvas, side, xR, yR, {
-                for (i in 0..sliceNum) {
-                    val point = toCartesian(canvas.width / 2f * baseR + psf.value(i.toDouble()).toFloat(), angle * i)
-                    if (i == 0) path.moveTo(point[0], point[1])
-                    else path.lineTo(point[0], point[1])
-                }
-                path.close()
-                canvas.drawPath(path, paint)
-                path.reset()
-            }, {
-
-            }, {
-
-            })
-        }
-
-        if (rpm != 0f) {
-            rot += rpm / 10f
-            rot %= 360f
-        }
+        drawHelper(canvas, side, xR, yR, {
+            for (i in 0..sliceNum) {
+                val point = toCartesian(canvas.width / 2f * baseR + psf.value(i.toDouble()).toFloat(), angle * i)
+                if (i == 0) path.moveTo(point[0], point[1])
+                else path.lineTo(point[0], point[1])
+            }
+            path.close()
+            canvas.drawPath(path, paint)
+            path.reset()
+        }, {
+            for (i in 0..sliceNum) {
+                val point = toCartesian(canvas.width / 2f * baseR, angle * i)
+                if (i == 0) path.moveTo(point[0], point[1])
+                else path.lineTo(point[0], point[1])
+            }
+            path.close()
+            for (i in 0..sliceNum) {
+                val point = toCartesian(canvas.width / 2f * baseR - psf.value(i.toDouble()).toFloat(), angle * i)
+                if (i == 0) path.moveTo(point[0], point[1])
+                else path.lineTo(point[0], point[1])
+            }
+            path.close()
+            path.fillType = Path.FillType.EVEN_ODD
+            canvas.drawPath(path, paint)
+            path.reset()
+        }, {
+            for (i in 0..sliceNum) {
+                val point = toCartesian(canvas.width / 2f * baseR + psf.value(i.toDouble()).toFloat(), angle * i)
+                if (i == 0) path.moveTo(point[0], point[1])
+                else path.lineTo(point[0], point[1])
+            }
+            path.close()
+            for (i in 0..sliceNum) {
+                val point = toCartesian(canvas.width / 2f * baseR - psf.value(i.toDouble()).toFloat(), angle * i)
+                if (i == 0) path.moveTo(point[0], point[1])
+                else path.lineTo(point[0], point[1])
+            }
+            path.close()
+            path.fillType = Path.FillType.EVEN_ODD
+            canvas.drawPath(path, paint)
+            path.reset()
+        })
     }
 
 

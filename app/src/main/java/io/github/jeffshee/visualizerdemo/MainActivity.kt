@@ -2,22 +2,23 @@ package io.github.jeffshee.visualizerdemo
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import io.github.jeffshee.visualizer.painters.fft.FftCircle
-import io.github.jeffshee.visualizer.painters.fft.FftWaveRgb
-import io.github.jeffshee.visualizer.painters.misc.BeatIcon
-import io.github.jeffshee.visualizer.painters.waveform.Waveform
+import io.github.jeffshee.visualizer.painters.misc.SimpleIcon
+import io.github.jeffshee.visualizer.utils.Preset
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var helper: VisualizerHelper
+    private lateinit var bitmap: Bitmap
+    private lateinit var circleBitmap: Bitmap
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,13 +36,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        bitmap = BitmapFactory.decodeResource(resources, R.drawable.chino512)
+        circleBitmap = SimpleIcon.getCircledBitmap(bitmap)
+
         helper = VisualizerHelper(0)
         visual.setPainterList(
             helper, listOf(
-                FftWaveRgb(),
-                Waveform().apply { paint.color = Color.argb(100, 255, 255, 255)},
-                BeatIcon(BeatIcon.getCircledBitmap(BitmapFactory.decodeResource(resources, R.drawable.chino512))),
-                FftCircle().apply { paint.color = Color.argb(200, 255, 255, 255);paint.strokeWidth = 8f }
+                //Preset.getPresetWithIcon("cWaveRgbIcon", bitmap)
+                Preset.getPresetWithIcon("cIcon", bitmap)
             )
         )
     }

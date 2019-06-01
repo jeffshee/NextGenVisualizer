@@ -23,7 +23,7 @@ class FftBar(
     var ampR: Float = 1f
 ) : Painter() {
 
-    private val bars = Array(barNum) { GravityModel() }
+    private var points = Array(0) { GravityModel() }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         val fft = helper.getFftMagnitudeRange(startHz, endHz)
@@ -31,23 +31,28 @@ class FftBar(
 
         val width = canvas.width.toFloat() * wR
 
-        val psf = when (mode) {
+        when (mode) {
             "mirror" -> {
                 val mirrorFft = getMirrorFft(fft)
-                interpolateFftBar(mirrorFft, barNum, interpolator)
+                if (points.size != mirrorFft.size) points =
+                    Array(mirrorFft.size) { GravityModel(0f) }
+                points.forEachIndexed { index, bar -> bar.update(mirrorFft[index].toFloat() * ampR) }
             }
             else -> {
-                interpolateFftBar(fft, barNum, interpolator)
+                if (points.size != fft.size) points =
+                    Array(fft.size) { GravityModel(0f) }
+                points.forEachIndexed { index, bar -> bar.update(fft[index].toFloat() * ampR) }
             }
         }
 
+        val psf = interpolateFft(points, barNum, interpolator)
+
         val barWidth = (width - (barNum + 1) * gapX) / barNum
-        bars.forEachIndexed { index, bar -> bar.update(psf.value(index.toDouble()).toFloat() * ampR) }
         drawHelper(canvas, side, xR, yR) {
-            bars.forEachIndexed { index, bar ->
+            for (i in 0 until barNum) {
                 canvas.drawRect(
-                    barWidth * index + gapX * (index + 1), -bar.height,
-                    barWidth * (index + 1) + gapX * (index + 1), 0f,
+                    barWidth * i + gapX * (i + 1), -psf.value(i.toDouble()).toFloat(),
+                    barWidth * (i + 1) + gapX * (i + 1), 0f,
                     paint
                 )
             }

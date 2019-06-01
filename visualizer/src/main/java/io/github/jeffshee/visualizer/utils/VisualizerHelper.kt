@@ -42,15 +42,9 @@ class VisualizerHelper(sessionId: Int) {
         return fftM
     }
 
-    fun getFftMagnitudeF(): FloatArray {
-        getFft()
-        for (k in 0 until fftMF.size) {
-            val i = (k + 1) * 2
-            fftMF[k] = Math.hypot(fftBuff[i].toDouble(), fftBuff[i + 1].toDouble()).toFloat()
-        }
-        return fftMF
-    }
-
+    /**
+     * Get Fft values from startHz to endHz
+     */
     fun getFftMagnitudeRange(startHz: Int, endHz: Int): DoubleArray {
         val sIndex = hzToFftIndex(startHz)
         val eIndex = hzToFftIndex(endHz)
@@ -64,23 +58,31 @@ class VisualizerHelper(sessionId: Int) {
         return Math.min(Math.max(Hz * 1024 / (44100 * 2), 0), 255)
     }
 
+    /**
+     * Log Waveform and Fft values every 1s
+     */
     fun startDebug() {
         handler = Handler()
         runnable = object : Runnable {
             override fun run() {
-                Log.d("Fft", getFft().contentToString())
                 Log.d("Waveform", getWave().contentToString())
-                Log.d("FftM", getFftMagnitudeF().contentToString())
+                Log.d("Fft", getFftMagnitude().contentToString())
                 handler.postDelayed(this, 1000)
             }
         }
         handler.post(runnable)
     }
 
+    /**
+     * Stop logging
+     */
     fun stopDebug() {
         handler.removeCallbacks(runnable)
     }
 
+    /**
+     * Release visualizer when not using anymore
+     */
     fun release() {
         visualizer.enabled = false
         visualizer.release()

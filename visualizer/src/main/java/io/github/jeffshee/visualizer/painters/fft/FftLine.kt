@@ -22,7 +22,7 @@ class FftLine(
     var ampR: Float = 1f
 ) : Painter() {
 
-    private val bars = Array(barNum) { GravityModel() }
+    private var points = Array(0) { GravityModel() }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         val fft = helper.getFftMagnitudeRange(startHz, endHz)
@@ -30,34 +30,38 @@ class FftLine(
 
         val width = canvas.width.toFloat() * wR
 
-        val psf = when (mode) {
+        when (mode) {
             "mirror" -> {
                 val mirrorFft = getMirrorFft(fft)
-                interpolateFftBar(mirrorFft, barNum, interpolator)
+                if (points.size != mirrorFft.size) points =
+                    Array(mirrorFft.size) { GravityModel(0f) }
+                points.forEachIndexed { index, bar -> bar.update(mirrorFft[index].toFloat() * ampR) }
             }
             else -> {
-                interpolateFftBar(fft, barNum, interpolator)
+                if (points.size != fft.size) points =
+                    Array(fft.size) { GravityModel(0f) }
+                points.forEachIndexed { index, bar -> bar.update(fft[index].toFloat() * ampR) }
             }
         }
+
+        val psf = interpolateFft(points, barNum, interpolator)
 
         val barWidth = width / barNum
         val pts = FloatArray(4 * barNum)
         drawHelper(canvas, side, xR, yR, {
-            bars.forEachIndexed { index, bar ->
-                bar.update(psf.value(index.toDouble()).toFloat() * ampR)
-                pts[4 * index] = barWidth * (index + .5f)
-                pts[4 * index + 1] = -bar.height
-                pts[4 * index + 2] = barWidth * (index + .5f)
-                pts[4 * index + 3] = 0f
+            for (i in 0 until barNum) {
+                pts[4 * i] = barWidth * (i + .5f)
+                pts[4 * i + 1] = -psf.value(i.toDouble()).toFloat()
+                pts[4 * i + 2] = barWidth * (i + .5f)
+                pts[4 * i + 3] = 0f
             }
             canvas.drawLines(pts, paint)
         }, {
-            bars.forEachIndexed { index, bar ->
-                bar.update(psf.value(index.toDouble()).toFloat() * ampR)
-                pts[4 * index] = barWidth * (index + .5f)
-                pts[4 * index + 1] = -bar.height
-                pts[4 * index + 2] = barWidth * (index + .5f)
-                pts[4 * index + 3] = bar.height
+            for (i in 0 until barNum) {
+                pts[4 * i] = barWidth * (i + .5f)
+                pts[4 * i + 1] = -psf.value(i.toDouble()).toFloat()
+                pts[4 * i + 2] = barWidth * (i + .5f)
+                pts[4 * i + 3] = psf.value(i.toDouble()).toFloat()
             }
             canvas.drawLines(pts, paint)
         })

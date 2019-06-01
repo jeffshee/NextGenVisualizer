@@ -4,19 +4,14 @@ import android.graphics.*
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
-class BeatIcon(
+class SimpleIcon(
     var bitmap: Bitmap,
-    var startHz: Int = 60,
-    var endHz: Int = 800,
     var xR: Float = .5f,
     var yR: Float = .5f,
-    var baseR: Float = .3f,
-    var ampR: Float = .3f,
-    var peak: Float = 200f
+    var baseR: Float = .3f
 ) : Painter() {
 
     private val matrix = Matrix()
-    private val circle = GravityModel(0f)
 
     companion object {
         fun getCircledBitmap(bitmap: Bitmap): Bitmap {
@@ -34,9 +29,7 @@ class BeatIcon(
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         bitmap.apply bitmap@{
-            val fft = helper.getFftMagnitudeRange(startHz, endHz)
-            circle.update(canvas.width * (baseR + getEnergy(fft).toFloat() / peak * ampR))
-            val radius = circle.height
+            val radius = canvas.width * baseR
             matrix.apply {
                 postScale(radius / this@bitmap.width, radius / this@bitmap.width)
                 postTranslate(-radius / 2f, -radius / 2f)

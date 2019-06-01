@@ -46,7 +46,7 @@ class FftWave(
             }
         }
 
-        val psf = interpolateFftWave(points, sliceNum, interpolator)
+        val psf = interpolateFft(points, sliceNum, interpolator)
         val sliceWidth = width / sliceNum
         if (paint.style == Paint.Style.STROKE) {
             path.moveTo(0f, -psf.value(0.0).toFloat())
