@@ -19,7 +19,8 @@ class FftCircle(
     var xR: Float = .5f,
     var yR: Float = .5f,
     var baseR: Float = .4f,
-    var ampR: Float = 1f
+    var ampR: Float = 1f,
+    var enableBoost: Boolean = true
 ) : Painter() {
 
     private var points = Array(0) { GravityModel() }
@@ -28,7 +29,9 @@ class FftCircle(
         val fft = helper.getFftMagnitudeRange(startHz, endHz)
         if (isQuiet(fft)) return
 
-        val circleFft = this.getCircleFft(fft)
+        var circleFft = this.getCircleFft(fft)
+        if(enableBoost) circleFft = boost(circleFft)
+
         if (points.size != circleFft.size) points = Array(circleFft.size) { GravityModel(0f) }
         points.forEachIndexed { index, bar -> bar.update(circleFft[index].toFloat() * ampR) }
         val psf = interpolateFftCircle(points, barNum, interpolator)

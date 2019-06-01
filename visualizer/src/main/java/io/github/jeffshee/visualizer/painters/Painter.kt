@@ -6,6 +6,7 @@ import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction
 import kotlin.math.cos
+import kotlin.math.exp
 import kotlin.math.sin
 
 abstract class Painter {
@@ -136,6 +137,16 @@ abstract class Painter {
             patched[fft.size + index] = d
         }
         return patched
+    }
+
+    /**
+     * Boost high values while suppress low values, generally give a powerful feeling
+     * @param fft Fft
+     * @param param Parameter, adjust to fit your liking
+     * @return BoostedFft
+     */
+    fun boost(fft: DoubleArray, param: Double = 100.0): DoubleArray {
+        return fft.map { it * it / param }.toDoubleArray()
     }
 
     /**
