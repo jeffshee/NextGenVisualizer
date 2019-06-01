@@ -8,6 +8,9 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import io.github.jeffshee.visualizer.painters.fft.FftBar
+import io.github.jeffshee.visualizer.painters.fft.FftWave
+import io.github.jeffshee.visualizer.painters.fft.FftWaveRgb
 import io.github.jeffshee.visualizer.painters.misc.SimpleIcon
 import io.github.jeffshee.visualizer.utils.Preset
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
@@ -42,8 +45,8 @@ class MainActivity : AppCompatActivity() {
         helper = VisualizerHelper(0)
         visual.setPainterList(
             helper, listOf(
-                Preset.getPresetWithIcon("cWaveRgbIcon", bitmap)
-                //Preset.getPresetWithIcon("cIcon", bitmap)
+                //Preset.getPresetWithIcon("cWaveRgbIcon", bitmap)
+                Preset.getPresetWithIcon("cIcon", bitmap)
             )
         )
     }

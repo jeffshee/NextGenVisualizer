@@ -20,17 +20,19 @@ class FftWave(
     var xR: Float = 0f,
     var yR: Float = 1f,
     var wR: Float = 1f,
-    var ampR: Float = 1f
+    var ampR: Float = 1f,
+    var enableBoost: Boolean = false
 ) : Painter() {
 
     private val path = Path()
     private var points = Array(0) { GravityModel() }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        val fft = helper.getFftMagnitudeRange(startHz, endHz)
+        var fft = helper.getFftMagnitudeRange(startHz, endHz)
         if (isQuiet(fft)) return
 
         val width = canvas.width.toFloat() * wR
+        if(enableBoost) fft = boost(fft)
 
         when (mode) {
             "mirror" -> {
