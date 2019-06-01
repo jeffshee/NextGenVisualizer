@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
         helper = VisualizerHelper(0)
         visual.setPainterList(
             helper, listOf(
-                //Preset.getPresetWithIcon("cWaveRgbIcon", bitmap)
-                Preset.getPresetWithIcon("cIcon", bitmap)
+                Preset.getPresetWithIcon("cWaveRgbIcon", bitmap)
+                //Preset.getPresetWithIcon("cIcon", bitmap)
             )
         )
     }
