@@ -1,61 +1,57 @@
 package io.github.jeffshee.visualizer.painters.modifier
 
+import android.animation.ValueAnimator
 import android.graphics.Canvas
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
-import kotlin.math.*
-import kotlin.random.Random
 
 class Shake : Painter {
     var painters: List<Painter>
-    var xR: Float
-    var yR: Float
-    var shaker: Shaker
+    //
+    var animX: ValueAnimator
+    var animY: ValueAnimator
 
-    constructor(painters: List<Painter>, xR: Float = .05f, yR: Float = .05f, shaker: Shaker = Shaker()) {
+    constructor(
+        painters: List<Painter>,
+        animX: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
+            duration = 16000;repeatCount = ValueAnimator.INFINITE
+        },
+        animY: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
+            duration = 8000;repeatCount = ValueAnimator.INFINITE
+        }
+    ) {
         this.painters = painters
-        this.xR = xR
-        this.yR = yR
-        this.shaker = shaker
+        this.animX = animX
+        this.animY = animY
+        animX.start()
+        animY.start()
     }
 
-    constructor(painter: Painter, xR: Float = .05f, yR: Float = .05f, shaker: Shaker = Shaker()) : this(
-        listOf(painter), xR, yR, shaker
-    )
+    constructor(
+        painter: Painter,
+        animX: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
+            duration = 16000;repeatCount = ValueAnimator.INFINITE
+        },
+        animY: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
+            duration = 8000;repeatCount = ValueAnimator.INFINITE
+        }
+    ) : this(listOf(painter), animX, animY)
+
+
+    override fun calc(helper: VisualizerHelper) {
+        painters.forEach { painter ->
+            painter.calc(helper)
+        }
+
+    }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        shaker.update()
-        drawHelper(canvas, "a", xR * shaker.x, yR * shaker.y) {
+        canvas.save()
+        drawHelper(canvas, "a", animX.animatedValue as Float, animY.animatedValue as Float) {
             painters.forEach { painter ->
                 painter.draw(canvas, helper)
             }
         }
-    }
-
-    class Shaker {
-        var x = 0f
-        var y = 0f
-        var v = .01f
-        var theta = 0f
-
-        private val range = toRad(60f)
-        private val pi = PI.toFloat()
-
-        fun update() {
-            if (x * x + y * y >= 1f) {
-                theta = toCenter() + range * Random.nextFloat() - range / 2f
-            }
-            x += v * cos(theta)
-            y += v * sin(theta)
-        }
-
-        private fun toCenter(): Float {
-            return pi + atan2(y, x)
-        }
-
-        private fun toRad(deg: Float): Float {
-            return deg / 180f * PI.toFloat()
-        }
-
+        canvas.restore()
     }
 }

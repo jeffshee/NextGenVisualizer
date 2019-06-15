@@ -7,44 +7,53 @@ import io.github.jeffshee.visualizer.utils.VisualizerHelper
 class Beat : Painter {
 
     var painters: List<Painter>
+    //
     var startHz: Int
     var endHz: Int
-    var xR: Float
-    var yR: Float
-    var baseR: Float
+    //
+    var pxR: Float
+    var pyR: Float
+    //
+    var radiusR: Float
     var beatAmpR: Float
     var peak: Float
 
     constructor(
-        painters: List<Painter>, startHz: Int = 60, endHz: Int = 800, xR: Float = .5f, yR: Float = .5f,
-        baseR: Float = 1f, beatAmpR: Float = 1f, peak: Float = 200f
+        painters: List<Painter>, startHz: Int = 60, endHz: Int = 800, pxR: Float = .5f, pyR: Float = .5f,
+        radiusR: Float = 1f, beatAmpR: Float = 1f, peak: Float = 200f
     ) {
         this.painters = painters
         this.startHz = startHz
         this.endHz = endHz
-        this.xR = xR
-        this.yR = yR
-        this.baseR = baseR
+        this.pxR = pxR
+        this.pyR = pyR
+        this.radiusR = radiusR
         this.beatAmpR = beatAmpR
         this.peak = peak
     }
 
     constructor(
-        painter: Painter, startHz: Int = 60, endHz: Int = 800, xR: Float = .5f, yR: Float = .5f,
-        baseR: Float = 1f, beatAmpR: Float = 1f, peak: Float = 200f
+        painter: Painter, startHz: Int = 60, endHz: Int = 800, pxR: Float = .5f, pyR: Float = .5f,
+        radiusR: Float = 1f, beatAmpR: Float = 1f, peak: Float = 200f
     ) : this(
-        listOf(painter), startHz, endHz, xR, yR, baseR, beatAmpR, peak
+        listOf(painter), startHz, endHz, pxR, pyR, radiusR, beatAmpR, peak
     )
 
     private val energy = GravityModel(0f)
 
+    override fun calc(helper: VisualizerHelper) {
+        energy.update(helper.getFftMagnitudeRange(startHz, endHz).average().toFloat())
+        painters.forEach { painter ->
+            painter.calc(helper)
+        }
+    }
+
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         canvas.save()
-        energy.update(helper.getFftMagnitudeRange(startHz, endHz).average().toFloat())
-        val width = canvas.width * (baseR + energy.height / peak * beatAmpR)
+        val width = canvas.width * (radiusR + energy.height / peak * beatAmpR)
         canvas.scale(
             width / canvas.width, width / canvas.width,
-            canvas.width * xR, canvas.height * yR
+            canvas.width * pxR, canvas.height * pyR
         )
         painters.forEach { painter ->
             painter.draw(canvas, helper)

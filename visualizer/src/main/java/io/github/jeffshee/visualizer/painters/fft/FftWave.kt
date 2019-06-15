@@ -6,64 +6,70 @@ import android.graphics.Paint
 import android.graphics.Path
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction
 
 class FftWave(
     var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE
     },
+    //
     var startHz: Int = 0,
     var endHz: Int = 2000,
-    var sliceNum: Int = 128,
+    //
+    var num: Int = 128,
     var interpolator: String = "sp",
+    //
     var side: String = "a",
-    var mode: String = "",
-    var xR: Float = 0f,
-    var yR: Float = 1f,
-    var wR: Float = 1f,
-    var ampR: Float = 1f,
-    var enableBoost: Boolean = false
+    var mirror: Boolean = false,
+    var power: Boolean = false,
+    //
+    var ampR: Float = 1f
 ) : Painter() {
 
     private val path = Path()
     private var points = Array(0) { GravityModel() }
+    private var skipFrame = false
+    lateinit var fft: DoubleArray
+    lateinit var psf: PolynomialSplineFunction
+
+    override fun calc(helper: VisualizerHelper) {
+        fft = helper.getFftMagnitudeRange(startHz, endHz)
+
+        if (isQuiet(fft)) {
+            skipFrame = true
+            return
+        } else skipFrame = false
+
+        if (power) fft = getPowerFft(fft)
+        if (mirror) fft = getMirrorFft(fft)
+
+        if (points.size != fft.size) points =
+            Array(fft.size) { GravityModel(0f) }
+        points.forEachIndexed { index, bar -> bar.update(fft[index].toFloat() * ampR) }
+
+        psf = interpolateFft(points, num, interpolator)
+    }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        var fft = helper.getFftMagnitudeRange(startHz, endHz)
-        if (isQuiet(fft)) return
+        if (skipFrame) return
 
-        val width = canvas.width.toFloat() * wR
-        if(enableBoost) fft = boost(fft)
+        val width = canvas.width.toFloat()
 
-        when (mode) {
-            "mirror" -> {
-                val mirrorFft = getMirrorFft(fft)
-                if (points.size != mirrorFft.size) points =
-                    Array(mirrorFft.size) { GravityModel(0f) }
-                points.forEachIndexed { index, bar -> bar.update(mirrorFft[index].toFloat() * ampR) }
-            }
-            else -> {
-                if (points.size != fft.size) points =
-                    Array(fft.size) { GravityModel(0f) }
-                points.forEachIndexed { index, bar -> bar.update(fft[index].toFloat() * ampR) }
-            }
-        }
-
-        val psf = interpolateFft(points, sliceNum, interpolator)
-        val sliceWidth = width / sliceNum
+        val sliceWidth = width / num
         if (paint.style == Paint.Style.STROKE) {
             path.moveTo(0f, -psf.value(0.0).toFloat())
-            for (i in 1..sliceNum) {
+            for (i in 1..num) {
                 path.lineTo(sliceWidth * i, -psf.value(i.toDouble()).toFloat())
             }
         } else {
             path.moveTo(0f, 1f)
-            for (i in 0..sliceNum) {
+            for (i in 0..num) {
                 path.lineTo(sliceWidth * i, -psf.value(i.toDouble()).toFloat())
             }
             path.lineTo(width, 1f)
             path.close()
         }
-        drawHelper(canvas, side, xR, yR) { canvas.drawPath(path, paint) }
+        drawHelper(canvas, side, 0f, .5f) { canvas.drawPath(path, paint) }
         path.reset()
     }
 }

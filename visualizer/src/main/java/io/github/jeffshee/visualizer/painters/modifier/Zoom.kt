@@ -1,48 +1,56 @@
 package io.github.jeffshee.visualizer.painters.modifier
 
+import android.animation.ValueAnimator
 import android.graphics.Canvas
+import android.renderscript.Sampler
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
-import kotlin.math.*
-import kotlin.random.Random
 
 class Zoom : Painter {
     var painters: List<Painter>
-    var xR: Float
-    var yR: Float
-    var zoomer: Zoomer
+    //
+    var pxR: Float
+    var pyR: Float
+    //
+    var anim: ValueAnimator
 
-    constructor(painters: List<Painter>, xR: Float = .05f, yR: Float = .05f, zoomer: Zoomer = Zoomer()) {
+    constructor(
+        painters: List<Painter>, pxR: Float = .5f, pyR: Float = .5f,
+        anim: ValueAnimator = ValueAnimator.ofFloat(.9f, 1.1f).apply {
+            duration = 8000;repeatCount = ValueAnimator.INFINITE;repeatMode = ValueAnimator.REVERSE
+        }
+    ) {
         this.painters = painters
-        this.xR = xR
-        this.yR = yR
-        this.zoomer = zoomer
+        this.pxR = pxR
+        this.pyR = pyR
+        this.anim = anim
+        anim.start()
     }
 
-    constructor(painter: Painter, xR: Float = .05f, yR: Float = .05f, zoomer: Zoomer = Zoomer()) : this(
-        listOf(painter), xR, yR, zoomer
+    constructor(
+        painter: Painter, pxR: Float = .5f, pyR: Float = .5f,
+        anim: ValueAnimator = ValueAnimator.ofFloat(.9f, 1.1f).apply {
+            duration = 8000;repeatCount = ValueAnimator.INFINITE;repeatMode = ValueAnimator.REVERSE
+        }
+    ) : this(
+        listOf(painter), pxR, pyR, anim
     )
 
+    override fun calc(helper: VisualizerHelper) {
+        painters.forEach { painter ->
+            painter.calc(helper)
+        }
+    }
+
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        zoomer.update()
         canvas.save()
-        canvas.scale(1f + .1f*zoomer.x,1f + .1f*zoomer.x, canvas.width/2f, canvas.height/2f)
+        canvas.scale(
+            anim.animatedValue as Float, anim.animatedValue as Float,
+            pxR * canvas.width, pyR * canvas.height
+        )
         painters.forEach { painter ->
             painter.draw(canvas, helper)
         }
         canvas.restore()
-    }
-
-    class Zoomer {
-        var x = 0f
-        var v = .01f
-
-        fun update() {
-            if (abs(x) >= 1f) {
-                v = -v
-            }
-            x += v
-        }
-
     }
 }

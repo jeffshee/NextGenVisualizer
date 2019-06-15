@@ -3,12 +3,12 @@ package io.github.jeffshee.visualizer.painters.misc
 import android.graphics.*
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
+import kotlin.math.min
 
 class SimpleIcon(
     var bitmap: Bitmap,
-    var xR: Float = .5f,
-    var yR: Float = .5f,
-    var baseR: Float = .3f
+    //
+    var radiusR: Float = .3f
 ) : Painter() {
 
     private val matrix = Matrix()
@@ -27,14 +27,18 @@ class SimpleIcon(
         }
     }
 
+    override fun calc(helper: VisualizerHelper) {
+    }
+
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
+        val shortest = min(canvas.width, canvas.height)
         bitmap.apply bitmap@{
-            val radius = canvas.width * baseR
+            val radius = shortest * radiusR
             matrix.apply {
                 postScale(radius / this@bitmap.width, radius / this@bitmap.width)
                 postTranslate(-radius / 2f, -radius / 2f)
             }
-            drawHelper(canvas, "a", xR, yR) {
+            drawHelper(canvas, "a", .5f, .5f) {
                 canvas.drawBitmap(this, matrix, null)
             }
             matrix.reset()

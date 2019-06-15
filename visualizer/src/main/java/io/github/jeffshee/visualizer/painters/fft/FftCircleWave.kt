@@ -6,42 +6,61 @@ import android.graphics.Paint
 import android.graphics.Path
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction
 import kotlin.math.PI
+import kotlin.math.min
 
 class FftCircleWave(
     var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE
     },
+    //
     var startHz: Int = 0,
     var endHz: Int = 2000,
-    var sliceNum: Int = 128,
+    //
+    var num: Int = 128,
     var interpolator: String = "sp",
+    //
     var side: String = "a",
-    var xR: Float = .5f,
-    var yR: Float = .5f,
-    var baseR: Float = .4f,
-    var ampR: Float = .6f,
-    var enableBoost: Boolean = true
+    var mirror: Boolean = false,
+    var power: Boolean = true,
+    //
+    var radiusR: Float = .4f,
+    var ampR: Float = .6f
 ) : Painter() {
 
     private val path = Path()
     private var points = Array(0) { GravityModel() }
+    private var skipFrame = false
+    lateinit var fft: DoubleArray
+    lateinit var psf: PolynomialSplineFunction
+
+    override fun calc(helper: VisualizerHelper) {
+        fft = helper.getFftMagnitudeRange(startHz, endHz)
+        if (isQuiet(fft) && paint.style == Paint.Style.STROKE) {
+            skipFrame = true
+            return
+        } else skipFrame = false
+
+        if (power) fft = getPowerFft(fft)
+        fft = if (mirror) getMirrorFft(fft)
+        else getCircleFft(fft)
+
+        if (points.size != fft.size) points = Array(fft.size) { GravityModel(0f) }
+        points.forEachIndexed { index, bar -> bar.update(fft[index].toFloat() * ampR) }
+
+        psf = interpolateFftCircle(points, num, interpolator)
+    }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        val fft = helper.getFftMagnitudeRange(startHz, endHz)
+        if (skipFrame) return
 
-        var circleFft = this.getCircleFft(fft)
-        if (enableBoost) circleFft = boost(circleFft)
+        val angle = 2 * PI.toFloat() / num
+        val shortest = min(canvas.width, canvas.height)
 
-        if (points.size != circleFft.size) points = Array(circleFft.size) { GravityModel(0f) }
-        points.forEachIndexed { index, bar -> bar.update(circleFft[index].toFloat() * ampR) }
-        val psf = interpolateFftCircle(points, sliceNum, interpolator)
-
-        val angle = 2 * PI.toFloat() / sliceNum
-
-        drawHelper(canvas, side, xR, yR, {
-            for (i in 0..sliceNum) {
-                val point = toCartesian(canvas.width / 2f * baseR + psf.value(i.toDouble()).toFloat(), angle * i)
+        drawHelper(canvas, side, .5f, .5f, {
+            for (i in 0..num) {
+                val point = toCartesian(shortest / 2f * radiusR + psf.value(i.toDouble()).toFloat(), angle * i)
                 if (i == 0) path.moveTo(point[0], point[1])
                 else path.lineTo(point[0], point[1])
             }
@@ -49,14 +68,14 @@ class FftCircleWave(
             canvas.drawPath(path, paint)
             path.reset()
         }, {
-            for (i in 0..sliceNum) {
-                val point = toCartesian(canvas.width / 2f * baseR, angle * i)
+            for (i in 0..num) {
+                val point = toCartesian(shortest / 2f * radiusR, angle * i)
                 if (i == 0) path.moveTo(point[0], point[1])
                 else path.lineTo(point[0], point[1])
             }
             path.close()
-            for (i in 0..sliceNum) {
-                val point = toCartesian(canvas.width / 2f * baseR - psf.value(i.toDouble()).toFloat(), angle * i)
+            for (i in 0..num) {
+                val point = toCartesian(shortest / 2f * radiusR - psf.value(i.toDouble()).toFloat(), angle * i)
                 if (i == 0) path.moveTo(point[0], point[1])
                 else path.lineTo(point[0], point[1])
             }
@@ -65,14 +84,14 @@ class FftCircleWave(
             canvas.drawPath(path, paint)
             path.reset()
         }, {
-            for (i in 0..sliceNum) {
-                val point = toCartesian(canvas.width / 2f * baseR + psf.value(i.toDouble()).toFloat(), angle * i)
+            for (i in 0..num) {
+                val point = toCartesian(shortest / 2f * radiusR + psf.value(i.toDouble()).toFloat(), angle * i)
                 if (i == 0) path.moveTo(point[0], point[1])
                 else path.lineTo(point[0], point[1])
             }
             path.close()
-            for (i in 0..sliceNum) {
-                val point = toCartesian(canvas.width / 2f * baseR - psf.value(i.toDouble()).toFloat(), angle * i)
+            for (i in 0..num) {
+                val point = toCartesian(shortest / 2f * radiusR - psf.value(i.toDouble()).toFloat(), angle * i)
                 if (i == 0) path.moveTo(point[0], point[1])
                 else path.lineTo(point[0], point[1])
             }

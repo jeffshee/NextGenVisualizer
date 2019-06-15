@@ -6,6 +6,7 @@ import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
 class Move : Painter {
     var painters: List<Painter>
+    //
     var xR: Float
     var yR: Float
 
@@ -18,6 +19,12 @@ class Move : Painter {
     constructor(painter: Painter, xR: Float = 0f, yR: Float = 0f) : this(
         listOf(painter), xR, yR
     )
+
+    override fun calc(helper: VisualizerHelper) {
+        painters.forEach { painter ->
+            painter.calc(helper)
+        }
+    }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         canvas.save()

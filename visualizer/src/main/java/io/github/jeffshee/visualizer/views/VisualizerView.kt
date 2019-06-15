@@ -56,7 +56,9 @@ class VisualizerView : View {
         super.onDraw(canvas)
         setLayerType(LAYER_TYPE_HARDWARE, paint)
         canvas?.apply {
-            painterList.forEach { it.draw(canvas, helper) }
+            painterList.forEach {
+                it.calc(helper)
+                it.draw(canvas, helper) }
             simpleText.text = "FPS: ${frameManager.fps()}"
             if (fps) simpleText.draw(canvas, helper)
         }

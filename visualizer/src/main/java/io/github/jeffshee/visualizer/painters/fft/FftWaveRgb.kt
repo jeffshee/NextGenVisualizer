@@ -6,45 +6,42 @@ import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
 class FftWaveRgb(
     flags: Int = Paint.ANTI_ALIAS_FLAG,
-    startHzR: Int = 0,
-    endHzR: Int = 1000,
-    startHzG: Int = 400,
-    endHzG: Int = 1500,
-    startHzB: Int = 800,
-    endHzB: Int = 2000,
-    sliceNum: Int = 128,
+    var color: List<Int> = listOf(Color.RED, Color.GREEN, Color.BLUE),
+    //
+    startHz: Int = 0,
+    endHz: Int = 2000,
+    //
+    num: Int = 128,
     interpolator: String = "sp",
-    side: String = "a",
-    mode: String = "",
-    xR: Float = 0f,
-    yR: Float = 1f,
-    wR: Float = 1f,
-    ampR: Float = 1f,
-    var color: List<Int> = listOf(Color.RED, Color.GREEN, Color.BLUE)
-
+    //
+    var side: String = "a",
+    mirror: Boolean = false,
+    power: Boolean = false,
+    //
+    ampR: Float = 1f
 ) : Painter() {
 
-    private val waveR = FftWave(Paint(flags).apply {
-        style = Paint.Style.FILL;color = this@FftWaveRgb.color[0];xfermode = PorterDuffXfermode(
-        PorterDuff.Mode.ADD
-    )
-    }, startHzR, endHzR, sliceNum, interpolator, side, mode, xR, yR, wR, ampR)
+    private val wave = FftWave(Paint(flags).apply {
+        style = Paint.Style.FILL;xfermode = PorterDuffXfermode(PorterDuff.Mode.ADD)
+    }, startHz, endHz, num, interpolator, side, mirror, power, ampR)
 
-    private val waveG = FftWave(Paint(flags).apply {
-        style = Paint.Style.FILL;color = this@FftWaveRgb.color[1];xfermode = PorterDuffXfermode(
-        PorterDuff.Mode.ADD
-    )
-    }, startHzG, endHzG, sliceNum, interpolator, side, mode, xR, yR, wR, ampR)
-
-    private val waveB = FftWave(Paint(flags).apply {
-        style = Paint.Style.FILL;color = this@FftWaveRgb.color[2];xfermode = PorterDuffXfermode(
-        PorterDuff.Mode.ADD
-    )
-    }, startHzB, endHzB, sliceNum, interpolator, side, mode, xR, yR, wR, ampR)
+    override fun calc(helper: VisualizerHelper) {
+        wave.calc(helper)
+    }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        waveR.draw(canvas, helper)
-        waveG.draw(canvas, helper)
-        waveB.draw(canvas, helper)
+        canvas.save()
+        canvas.scale(1.2f, 1f, canvas.width / 2f, canvas.height.toFloat())
+        drawHelper(canvas, side, -.03f, 0f) {
+            wave.paint.color = color[0]
+            wave.draw(canvas, helper)
+        }
+        wave.paint.color = color[1]
+        wave.draw(canvas, helper)
+        drawHelper(canvas, side, .03f, 0f) {
+            wave.paint.color = color[2]
+            wave.draw(canvas, helper)
+        }
+        canvas.restore()
     }
 }

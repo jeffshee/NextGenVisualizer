@@ -11,32 +11,43 @@ class Waveform(
     var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE;style = Paint.Style.STROKE;strokeWidth = 2f
     },
+    //
     var startHz: Int = 0,
     var endHz: Int = 2000,
-    var sliceNum: Int = 256,
-    var xR: Float = 0f,
-    var yR: Float = .5f,
-    var wR: Float = 1f,
+    //
+    var num: Int = 256,
+    //
     var ampR: Float = 1f
 ) : Painter() {
 
     private val path = Path()
+    private var skipFrame = false
+    lateinit var waveform : ByteArray
+
+    override fun calc(helper: VisualizerHelper) {
+        val fft = helper.getFftMagnitudeRange(startHz, endHz)
+
+        if (isQuiet(fft)) {
+            skipFrame = true
+            return
+        } else skipFrame = false
+
+        waveform = helper.getWave()
+    }
 
     @ExperimentalUnsignedTypes
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        val fft = helper.getFftMagnitudeRange(startHz, endHz)
-        if (isQuiet(fft)) return
+        if (skipFrame) return
 
-        val width = canvas.width.toFloat() * wR
+        val width = canvas.width.toFloat()
 
-        val wave = helper.getWave()
-        val point = wave.size / (sliceNum + 1)
-        val sliceWidth = width / sliceNum
+        val point = waveform.size / (num + 1)
+        val sliceWidth = width / num
 
-        path.moveTo(0f, (-wave[0].toUByte().toInt() + 128f) * ampR)
-        for (i in 1..sliceNum)
-            path.lineTo(sliceWidth * i, (-wave[point * i].toUByte().toInt() + 128f) * ampR)
-        drawHelper(canvas, "a", xR, yR) { canvas.drawPath(path, paint) }
+        path.moveTo(0f, (-waveform[0].toUByte().toInt() + 128f) * ampR)
+        for (i in 1..num)
+            path.lineTo(sliceWidth * i, (-waveform[point * i].toUByte().toInt() + 128f) * ampR)
+        drawHelper(canvas, "a", 0f, .5f) { canvas.drawPath(path, paint) }
         path.reset()
     }
 }

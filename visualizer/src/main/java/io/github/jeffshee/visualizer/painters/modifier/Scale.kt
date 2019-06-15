@@ -6,27 +6,35 @@ import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
 class Scale : Painter {
     var painters: List<Painter>
-    var wR: Float
-    var hR: Float
+    //
+    var scaleX: Float
+    var scaleY: Float
+    //
     var pxR: Float
     var pyR: Float
 
-    constructor(painters: List<Painter>, wR: Float = 1f, hR: Float = 1f, pxR: Float = .5f, pyR: Float = .5f) {
+    constructor(painters: List<Painter>, scaleX: Float = 1f, scaleY: Float = 1f, pxR: Float = .5f, pyR: Float = .5f) {
         this.painters = painters
-        this.wR = wR
-        this.hR = hR
+        this.scaleX = scaleX
+        this.scaleY = scaleY
         this.pxR = pxR
         this.pyR = pyR
 
     }
 
-    constructor(painter: Painter, wR: Float = 1f, hR: Float = 1f, pxR: Float = .5f, pyR: Float = .5f) : this(
-        listOf(painter), wR, hR, pxR, pyR
+    constructor(painter: Painter, scaleX: Float = 1f, scaleY: Float = 1f, pxR: Float = .5f, pyR: Float = .5f) : this(
+        listOf(painter), scaleX, scaleY, pxR, pyR
     )
+
+    override fun calc(helper: VisualizerHelper) {
+        painters.forEach { painter ->
+            painter.calc(helper)
+        }
+    }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         canvas.save()
-        canvas.scale(wR, hR, pxR * canvas.width, pyR * canvas.height)
+        canvas.scale(scaleX, scaleY, pxR * canvas.width, pyR * canvas.height)
         painters.forEach { painter ->
             painter.draw(canvas, helper)
         }

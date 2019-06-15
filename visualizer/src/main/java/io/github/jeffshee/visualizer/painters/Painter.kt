@@ -6,13 +6,14 @@ import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction
 import kotlin.math.cos
-import kotlin.math.exp
 import kotlin.math.sin
 
 abstract class Painter {
 
     private val li = LinearInterpolator()
     private val sp = AkimaSplineInterpolator()
+
+    abstract fun calc(helper: VisualizerHelper)
 
     /**
      * An abstract function that every painters must implement and do their drawing there.
@@ -36,7 +37,7 @@ abstract class Painter {
      * @param interpolator Which interpolator to use, `li` for Linear, `sp` for Spline
      *
      * @return a `PolynomialSplineFunction` (psf). To get the value, use
-     * `psf.value(x)`, where `x` must be a Double value from 0 to `sliceNum`
+     * `psf.value(x)`, where `x` must be a Double value from 0 to `num`
      */
     fun interpolateFft(
         gravityModels: Array<GravityModel>, sliceNum: Int, interpolator: String
@@ -64,7 +65,7 @@ abstract class Painter {
      * @param interpolator Which interpolator to use, `li` for Linear, `sp` for Spline
      *
      * @return a `PolynomialSplineFunction` (psf). To get the value, use
-     * `psf.value(x)`, where `x` must be a Double value from 0 to `sliceNum`
+     * `psf.value(x)`, where `x` must be a Double value from 0 to `num`
      */
     fun interpolateFftCircle(
         gravityModels: Array<GravityModel>, sliceNum: Int, interpolator: String
@@ -125,27 +126,43 @@ abstract class Painter {
     /**
      * Patch the Fft to a MirrorFft
      *
-     * `[0, 1, ..., n] -> [0, 1, ..., n, n, ... , 1, 0]`
-     *
      * @param fft Fft
+     * @param mode when 0 -> do nothing
+     *             when 1 ->
+     *              `[0, 1, ..., n] -> [n, ..., 1, 0, 0, 1, ..., n]`
+     *             when 2 ->
+     *              `[0, 1, ..., n] -> [0, 1, ..., n, n, ..., 1, 0]`
+     *             when 3 ->
+     *             `[0, 1, ..., n] -> [n/2, ..., 1, 0, 0, 1, ..., n/2]`
+     *             when 4 ->
+     *             `[0, 1, ..., n] -> [0, 1, ..., n/2, n/2, ..., 1, 0]`
      * @return MirrorFft
      */
-    fun getMirrorFft(fft: DoubleArray): DoubleArray {
-        val patched = DoubleArray(fft.size * 2)
-        fft.forEachIndexed { index, d ->
-            patched[fft.lastIndex - index] = d
-            patched[fft.size + index] = d
+    fun getMirrorFft(fft: DoubleArray, mode: Int = 1): DoubleArray {
+        return when (mode) {
+            1 -> {
+                fft.sliceArray(0..fft.lastIndex).reversedArray() + fft.sliceArray(0..fft.lastIndex)
+            }
+            2 -> {
+                fft.sliceArray(0..fft.lastIndex) + fft.sliceArray(0..fft.lastIndex).reversedArray()
+            }
+            3 -> {
+                fft.sliceArray(0..fft.lastIndex / 2).reversedArray() + fft.sliceArray(0..fft.lastIndex / 2)
+            }
+            4 -> {
+                fft.sliceArray(0..fft.lastIndex / 2) + fft.sliceArray(0..fft.lastIndex / 2).reversedArray()
+            }
+            else -> fft
         }
-        return patched
     }
 
     /**
      * Boost high values while suppress low values, generally give a powerful feeling
      * @param fft Fft
      * @param param Parameter, adjust to fit your liking
-     * @return BoostedFft
+     * @return PowerFft
      */
-    fun boost(fft: DoubleArray, param: Double = 100.0): DoubleArray {
+    fun getPowerFft(fft: DoubleArray, param: Double = 100.0): DoubleArray {
         return fft.map { it * it / param }.toDoubleArray()
     }
 
