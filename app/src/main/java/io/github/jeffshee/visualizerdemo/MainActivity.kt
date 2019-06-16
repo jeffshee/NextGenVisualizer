@@ -11,12 +11,13 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import io.github.jeffshee.visualizer.painters.fft.FftCircle
-import io.github.jeffshee.visualizer.painters.fft.FftWave
-import io.github.jeffshee.visualizer.painters.misc.Background
+import android.widget.Toast
+import io.github.jeffshee.visualizer.painters.fft.*
 import io.github.jeffshee.visualizer.painters.misc.SimpleIcon
+import io.github.jeffshee.visualizer.painters.modifier.Beat
+import io.github.jeffshee.visualizer.painters.modifier.Move
+import io.github.jeffshee.visualizer.painters.modifier.Rotate
 import io.github.jeffshee.visualizer.painters.modifier.Shake
-import io.github.jeffshee.visualizer.painters.modifier.Zoom
 import io.github.jeffshee.visualizer.painters.waveform.Waveform
 import io.github.jeffshee.visualizer.utils.Preset
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var background: Bitmap
     private lateinit var bitmap: Bitmap
     private lateinit var circleBitmap: Bitmap
+    private var current = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,13 +74,33 @@ class MainActivity : AppCompatActivity() {
         circleBitmap = SimpleIcon.getCircledBitmap(bitmap)
 
         helper = VisualizerHelper(0)
-        visual.setPainterList(
-            helper, listOf(
+        val painterLists = listOf(
+            listOf(FftBar(), Move(FftWave(), yR = .5f)),
+            listOf(FftLine(), Move(FftWaveRgb(), yR = .5f)),
+            listOf(Rotate(SimpleIcon(circleBitmap).apply { radiusR = .5f }).apply { rpm = 2f }),
+            listOf(Preset.getPresetWithBitmap("cIcon", circleBitmap)),
+            listOf(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap))),
+            listOf(
+                Waveform().apply { paint.alpha = 150 },
+                Shake(Preset.getPresetWithBitmap("cWaveRgbIcon", circleBitmap)).apply {
+                    animX.duration = 1000
+                    animY.duration = 2000
+                }),
+            listOf(
                 Preset.getPresetWithBitmap("liveBg", background),
-
                 FftCircle().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND }
             )
         )
+        visual.setPainterList(
+            helper, painterLists[current]
+        )
+        visual.setOnLongClickListener {
+            if (current < painterLists.lastIndex) current++ else current = 0
+            visual.setPainterList(helper, painterLists[current])
+            true
+        }
+
+        Toast.makeText(this, "Try long-click \ud83d\ude09", Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroy() {

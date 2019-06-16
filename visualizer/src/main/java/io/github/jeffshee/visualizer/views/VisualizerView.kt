@@ -54,15 +54,17 @@ class VisualizerView : View {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        setLayerType(LAYER_TYPE_HARDWARE, paint)
-        canvas?.apply {
-            painterList.forEach {
-                it.calc(helper)
-                it.draw(canvas, helper) }
-            simpleText.text = "FPS: ${frameManager.fps()}"
-            if (fps) simpleText.draw(canvas, helper)
+        if(this::painterList.isInitialized && this::helper.isInitialized){
+            setLayerType(LAYER_TYPE_HARDWARE, paint)
+            canvas?.apply {
+                painterList.forEach {
+                    it.calc(helper)
+                    it.draw(canvas, helper) }
+                simpleText.text = "FPS: ${frameManager.fps()}"
+                if (fps) simpleText.draw(canvas, helper)
+            }
+            frameManager.tick()
+            if (anim) invalidate()
         }
-        frameManager.tick()
-        if (anim) invalidate()
     }
 }
