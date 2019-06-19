@@ -3,6 +3,7 @@ package io.github.jeffshee.visualizer.painters.fft
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction
@@ -26,6 +27,7 @@ class FftBar(
     var ampR: Float = 1f
 ) : Painter() {
 
+    private val path = Path()
     private var points = Array(0) { GravityModel() }
     private var skipFrame = false
     lateinit var fft: DoubleArray
@@ -57,12 +59,22 @@ class FftBar(
 
         drawHelper(canvas, side, 0f, .5f) {
             for (i in 0 until num) {
-                canvas.drawRect(
-                    barWidth * i + gapX * (i + 1), -psf.value(i.toDouble()).toFloat(),
-                    barWidth * (i + 1) + gapX * (i + 1), 0f,
-                    paint
-                )
+                path.moveTo(barWidth * i + gapX * (i + 1), -psf.value(i.toDouble()).toFloat())
+                path.lineTo(barWidth * (i + 1) + gapX * (i + 1), -psf.value(i.toDouble()).toFloat())
+                path.lineTo(barWidth * (i + 1) + gapX * (i + 1), 0f)
+                path.lineTo(barWidth * i + gapX * (i + 1), 0f)
+                path.close()
+                /**
+                 * Equivalent to canvas.drawRect() below, but faster
+                 */
+//                canvas.drawRect(
+//                    barWidth * i + gapX * (i + 1), -psf.value(i.toDouble()).toFloat(),
+//                    barWidth * (i + 1) + gapX * (i + 1), 0f,
+//                    paint
+//                )
             }
+            canvas.drawPath(path, paint)
         }
+        path.reset()
     }
 }
