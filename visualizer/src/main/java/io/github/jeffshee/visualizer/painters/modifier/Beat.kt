@@ -1,11 +1,11 @@
 package io.github.jeffshee.visualizer.painters.modifier
 
 import android.graphics.Canvas
+import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
 class Beat : Painter {
-
     var painters: List<Painter>
     //
     var startHz: Int
@@ -17,6 +17,8 @@ class Beat : Painter {
     var radiusR: Float
     var beatAmpR: Float
     var peak: Float
+
+    override var paint = Paint()
 
     constructor(
         painters: List<Painter>, startHz: Int = 60, endHz: Int = 800, pxR: Float = .5f, pyR: Float = .5f,
@@ -56,6 +58,7 @@ class Beat : Painter {
             canvas.width * pxR, canvas.height * pyR
         )
         painters.forEach { painter ->
+            painter.paint.apply { colorFilter = paint.colorFilter;xfermode = paint.xfermode }
             painter.draw(canvas, helper)
         }
         canvas.restore()

@@ -10,7 +10,7 @@ import kotlin.math.PI
 import kotlin.math.min
 
 class FftCircle(
-    var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    override var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE;style = Paint.Style.STROKE;strokeWidth = 2f
     },
     //

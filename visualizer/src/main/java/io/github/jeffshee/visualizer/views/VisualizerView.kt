@@ -47,9 +47,7 @@ class VisualizerView : View {
     }
 
     private fun onCreateView() {
-        simpleText = SimpleText(Paint().apply {
-            color = Color.WHITE;textSize = dp2px(resources, 12f)
-        })
+        simpleText = SimpleText().apply { paint.textSize = dp2px(resources, 12f) }
     }
 
     override fun onDraw(canvas: Canvas?) {

@@ -21,6 +21,7 @@ class FftWaveRgb(
     ampR: Float = 1f
 ) : Painter() {
 
+    override var paint: Paint = Paint()
     private val wave = FftWave(Paint(flags).apply {
         style = Paint.Style.FILL;xfermode = PorterDuffXfermode(PorterDuff.Mode.ADD)
     }, startHz, endHz, num, interpolator, side, mirror, power, ampR)

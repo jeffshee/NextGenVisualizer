@@ -14,10 +14,7 @@ import android.view.View
 import android.widget.Toast
 import io.github.jeffshee.visualizer.painters.fft.*
 import io.github.jeffshee.visualizer.painters.misc.SimpleIcon
-import io.github.jeffshee.visualizer.painters.modifier.Beat
-import io.github.jeffshee.visualizer.painters.modifier.Move
-import io.github.jeffshee.visualizer.painters.modifier.Rotate
-import io.github.jeffshee.visualizer.painters.modifier.Shake
+import io.github.jeffshee.visualizer.painters.modifier.*
 import io.github.jeffshee.visualizer.painters.waveform.Waveform
 import io.github.jeffshee.visualizer.utils.Preset
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
@@ -79,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             listOf(FftLine(), Move(FftWaveRgb(), yR = .5f)),
             listOf(Rotate(SimpleIcon(circleBitmap).apply { radiusR = .5f }).apply { rpm = 2f }),
             listOf(Preset.getPresetWithBitmap("cIcon", circleBitmap)),
-            listOf(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap))),
+            listOf(Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap)))),
             listOf(
                 Waveform().apply { paint.alpha = 150 },
                 Shake(Preset.getPresetWithBitmap("cWaveRgbIcon", circleBitmap)).apply {

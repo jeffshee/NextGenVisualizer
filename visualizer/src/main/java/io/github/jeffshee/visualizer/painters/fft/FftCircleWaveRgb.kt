@@ -21,9 +21,9 @@ class FftCircleWaveRgb(
     radiusR: Float = .4f,
     ampR: Float = .6f,
     var rot: Float = 10f
-
 ) : Painter() {
 
+    override var paint: Paint = Paint()
     private val wave = FftCircleWave(Paint(flags).apply {
         style = Paint.Style.FILL;xfermode = PorterDuffXfermode(PorterDuff.Mode.ADD)
     }, startHz, endHz, num, interpolator, side, mirror, power, radiusR, ampR)

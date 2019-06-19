@@ -1,6 +1,7 @@
 package io.github.jeffshee.visualizer.painters
 
 import android.graphics.Canvas
+import android.graphics.Paint
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator
@@ -13,6 +14,13 @@ abstract class Painter {
     private val li = LinearInterpolator()
     private val sp = AkimaSplineInterpolator()
 
+    abstract var paint:Paint
+
+    /**
+     * An abstract function that every painters must implement and do their calculation there.
+     *
+     * @param helper the visualizerHelper from VisualizerView
+     */
     abstract fun calc(helper: VisualizerHelper)
 
     /**

@@ -8,7 +8,7 @@ import io.github.jeffshee.visualizer.utils.VisualizerHelper
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction
 
 class FftBar(
-    var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    override var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE;style = Paint.Style.STROKE;strokeWidth = 2f
     },
     //

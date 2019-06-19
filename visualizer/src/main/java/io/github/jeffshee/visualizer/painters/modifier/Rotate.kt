@@ -1,6 +1,7 @@
 package io.github.jeffshee.visualizer.painters.modifier
 
 import android.graphics.Canvas
+import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
@@ -12,6 +13,8 @@ class Rotate : Painter {
     //
     var rpm: Float
     var offset: Float
+
+    override var paint = Paint()
 
     constructor(painters: List<Painter>, pxR: Float = .5f, pyR: Float = .5f, rpm: Float = 1f, offset: Float = 0f) {
         this.painters = painters
@@ -32,9 +35,11 @@ class Rotate : Painter {
             painter.calc(helper)
         }
     }
+
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         rotateHelper(canvas, rot + offset, pxR, pyR) {
             painters.forEach { painter ->
+                painter.paint.apply { colorFilter = paint.colorFilter;xfermode = paint.xfermode }
                 painter.draw(canvas, helper)
             }
         }

@@ -2,6 +2,7 @@ package io.github.jeffshee.visualizer.painters.modifier
 
 import android.animation.ValueAnimator
 import android.graphics.Canvas
+import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
@@ -10,6 +11,8 @@ class Shake : Painter {
     //
     var animX: ValueAnimator
     var animY: ValueAnimator
+
+    override var paint = Paint()
 
     constructor(
         painters: List<Painter>,
@@ -49,6 +52,7 @@ class Shake : Painter {
         canvas.save()
         drawHelper(canvas, "a", animX.animatedValue as Float, animY.animatedValue as Float) {
             painters.forEach { painter ->
+                painter.paint.apply { colorFilter = paint.colorFilter;xfermode = paint.xfermode }
                 painter.draw(canvas, helper)
             }
         }

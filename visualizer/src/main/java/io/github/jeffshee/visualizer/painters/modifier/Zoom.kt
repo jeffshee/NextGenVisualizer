@@ -2,6 +2,7 @@ package io.github.jeffshee.visualizer.painters.modifier
 
 import android.animation.ValueAnimator
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.renderscript.Sampler
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
@@ -13,6 +14,8 @@ class Zoom : Painter {
     var pyR: Float
     //
     var anim: ValueAnimator
+
+    override var paint = Paint()
 
     constructor(
         painters: List<Painter>, pxR: Float = .5f, pyR: Float = .5f,
@@ -49,6 +52,7 @@ class Zoom : Painter {
             pxR * canvas.width, pyR * canvas.height
         )
         painters.forEach { painter ->
+            painter.paint.apply { colorFilter = paint.colorFilter;xfermode = paint.xfermode }
             painter.draw(canvas, helper)
         }
         canvas.restore()

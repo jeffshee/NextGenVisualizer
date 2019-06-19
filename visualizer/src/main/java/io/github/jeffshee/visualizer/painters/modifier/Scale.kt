@@ -1,6 +1,7 @@
 package io.github.jeffshee.visualizer.painters.modifier
 
 import android.graphics.Canvas
+import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
@@ -12,6 +13,8 @@ class Scale : Painter {
     //
     var pxR: Float
     var pyR: Float
+
+    override var paint = Paint()
 
     constructor(painters: List<Painter>, scaleX: Float = 1f, scaleY: Float = 1f, pxR: Float = .5f, pyR: Float = .5f) {
         this.painters = painters
@@ -36,6 +39,7 @@ class Scale : Painter {
         canvas.save()
         canvas.scale(scaleX, scaleY, pxR * canvas.width, pyR * canvas.height)
         painters.forEach { painter ->
+            painter.paint.apply { colorFilter = paint.colorFilter;xfermode = paint.xfermode }
             painter.draw(canvas, helper)
         }
         canvas.restore()

@@ -8,7 +8,8 @@ import kotlin.math.min
 class SimpleIcon(
     var bitmap: Bitmap,
     //
-    var radiusR: Float = .3f
+    var radiusR: Float = .3f,
+    override var paint: Paint = Paint()
 ) : Painter() {
 
     private val matrix = Matrix()
@@ -39,7 +40,7 @@ class SimpleIcon(
                 postTranslate(-radius / 2f, -radius / 2f)
             }
             drawHelper(canvas, "a", .5f, .5f) {
-                canvas.drawBitmap(this, matrix, null)
+                canvas.drawBitmap(this, matrix, paint)
             }
             matrix.reset()
         }

@@ -1,10 +1,12 @@
 package io.github.jeffshee.visualizer.painters.modifier
 
 import android.graphics.Canvas
+import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
 class Sequential(var painters: List<Painter>) : Painter() {
+    override var paint = Paint()
 
     override fun calc(helper: VisualizerHelper) {
         painters.forEach { painter ->
@@ -13,6 +15,9 @@ class Sequential(var painters: List<Painter>) : Painter() {
     }
 
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
-        painters.forEach { painter -> painter.draw(canvas, helper) }
+        painters.forEach { painter ->
+            painter.paint.apply { colorFilter = paint.colorFilter;xfermode = paint.xfermode }
+            painter.draw(canvas, helper)
+        }
     }
 }
