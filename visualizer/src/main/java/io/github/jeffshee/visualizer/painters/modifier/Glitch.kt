@@ -1,6 +1,7 @@
 package io.github.jeffshee.visualizer.painters.modifier
 
 import android.graphics.*
+import android.os.Build
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 import kotlin.random.Random
@@ -52,7 +53,12 @@ class Glitch : Painter {
             val noise = Random.nextFloat() * .1f - .05f
 
             canvas.save()
-            canvas.clipRect(0f, y, width, y + h, Region.Op.DIFFERENCE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                canvas.clipOutRect(0f, y, width, y + h)
+            }else{
+                @Suppress("DEPRECATION")
+                canvas.clipRect(0f, y, width, y + h, Region.Op.DIFFERENCE)
+            }
             drawHelper(canvas, "a", 0f, 0f) {
                 painters.forEach { painter ->
                     painter.paint.apply {
