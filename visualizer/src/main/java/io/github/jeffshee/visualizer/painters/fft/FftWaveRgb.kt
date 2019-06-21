@@ -14,7 +14,7 @@ class FftWaveRgb(
     num: Int = 128,
     interpolator: String = "sp",
     //
-    var side: String = "a",
+    side: String = "a",
     mirror: Boolean = false,
     power: Boolean = false,
     //
@@ -33,13 +33,15 @@ class FftWaveRgb(
     override fun draw(canvas: Canvas, helper: VisualizerHelper) {
         canvas.save()
         canvas.scale(1.2f, 1f, canvas.width / 2f, canvas.height.toFloat())
-        drawHelper(canvas, side, -.03f, 0f) {
+        drawHelper(canvas, "a", -.03f, 0f) {
             wave.paint.color = color[0]
             wave.draw(canvas, helper)
         }
-        wave.paint.color = color[1]
-        wave.draw(canvas, helper)
-        drawHelper(canvas, side, .03f, 0f) {
+        drawHelper(canvas, "a", 0f,0f){
+            wave.paint.color = color[1]
+            wave.draw(canvas, helper)
+        }
+        drawHelper(canvas, "a", .03f, 0f) {
             wave.paint.color = color[2]
             wave.draw(canvas, helper)
         }
