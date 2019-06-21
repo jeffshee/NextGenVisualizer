@@ -57,24 +57,25 @@ class FftBar(
         val width = canvas.width.toFloat()
         val barWidth = (width - (num + 1) * gapX) / num
 
-        drawHelper(canvas, side, 0f, .5f) {
+        drawHelper(canvas, side, 0f, .5f, {
             for (i in 0 until num) {
                 path.moveTo(barWidth * i + gapX * (i + 1), -psf.value(i.toDouble()).toFloat())
                 path.lineTo(barWidth * (i + 1) + gapX * (i + 1), -psf.value(i.toDouble()).toFloat())
                 path.lineTo(barWidth * (i + 1) + gapX * (i + 1), 0f)
                 path.lineTo(barWidth * i + gapX * (i + 1), 0f)
                 path.close()
-                /**
-                 * Equivalent to canvas.drawRect() below, but faster
-                 */
-//                canvas.drawRect(
-//                    barWidth * i + gapX * (i + 1), -psf.value(i.toDouble()).toFloat(),
-//                    barWidth * (i + 1) + gapX * (i + 1), 0f,
-//                    paint
-//                )
             }
             canvas.drawPath(path, paint)
-        }
+        }, {
+            for (i in 0 until num) {
+                path.moveTo(barWidth * i + gapX * (i + 1), -psf.value(i.toDouble()).toFloat())
+                path.lineTo(barWidth * (i + 1) + gapX * (i + 1), -psf.value(i.toDouble()).toFloat())
+                path.lineTo(barWidth * (i + 1) + gapX * (i + 1), psf.value(i.toDouble()).toFloat())
+                path.lineTo(barWidth * i + gapX * (i + 1), psf.value(i.toDouble()).toFloat())
+                path.close()
+            }
+            canvas.drawPath(path, paint)
+        })
         path.reset()
     }
 }
