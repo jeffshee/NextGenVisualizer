@@ -1,10 +1,38 @@
-# [WIP] NextGenVisualizer
+# [Beta] NextGenVisualizer
 Audio visualizer library for Android. Written in Kotlin. Aim for:
 > Light-weight, Flexible, Easy.
 
-## Early Preview
-> Click the image to play video (Youtube)
+## Preview
+Tested on Huawei MediaPad M3, performance was around 50~60 fps. (It depends)
+### Gif
+> (Basic) Waveform, FftBar, FftLine, FftWave, FftWaveRgb
 
-1. Composition of multiple effects (5 in-used in this preview), performance was about ~57fps. (Huawei MediaPad M3)
+![](/preview/01.gif "")
 
-[![](http://i3.ytimg.com/vi/NCP8yEIofgY/maxresdefault.jpg)](http://www.youtube.com/watch?v=NCP8yEIofgY "")
+> (Basic) FftCircle, FftCircleWave, FftCircleWaveRgb
+
+![](/preview/02.gif "")
+
+> Glitch+Beat+Rotate, SimpleIcon, FftCircle
+
+![](/preview/03.gif "")
+
+> Shake, SimpleIcon, FftCircleWaveRgb, Waveform
+
+![](/preview/04.gif "")
+
+> Shake, Background, FftCircle
+
+![](/preview/05.gif "")
+
+### Video
+You can watch it on my [Google Drive](https://drive.google.com/open?id=1x6vJIhzd4OsF8EHsRRLp_WZzLGJSMkhp). Full-screen+HD recommended!
+
+☆ I don't own the music, icon and wallpaper. For demonstration purpose only.
+
+## Please!! (｡>ｕ<｡)
+While the library isn't quite ready yet, feel free to open an issue if you have any problem/suggestion :heart:
+
+Star my project if you like it! :star2:
+
+Stay tune!!
