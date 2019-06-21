@@ -72,10 +72,39 @@ class MainActivity : AppCompatActivity() {
 
         helper = VisualizerHelper(0)
         val painterLists = listOf(
-            listOf(FftBar(), Move(FftWave(), yR = .5f)),
-            listOf(FftLine(), Move(FftWaveRgb(), yR = .5f)),
-            listOf(Rotate(SimpleIcon(circleBitmap).apply { radiusR = .5f }).apply { rpm = 2f }),
-            listOf(Preset.getPresetWithBitmap("cIcon", circleBitmap)),
+            // Basic components
+            listOf(
+                Move(Waveform(), yR = -.3f),
+                Move(FftBar(), yR = -.1f),
+                Move(FftLine(), yR = .1f),
+                Move(FftWave(), yR = .3f),
+                Move(FftWaveRgb(), yR = .5f)
+            ),
+            listOf(
+                Move(FftBar(side = "b"), yR = -.3f),
+                Move(FftLine(side = "b"), yR = -.1f),
+                Move(FftWave(side = "b"), yR = .1f),
+                Move(FftWaveRgb(side = "b"), yR = .3f)
+            ),
+            listOf(
+                Move(FftBar(side = "ab"), yR = -.3f),
+                Move(FftLine(side = "ab"), yR = -.1f),
+                Move(FftWave(side = "ab"), yR = .1f),
+                Move(FftWaveRgb(side = "ab"), yR = .3f)
+            ),
+            // Basic components (Circle)
+            listOf(Move(FftCircle(), xR = -.3f), FftCircleWave(), Move(FftCircleWaveRgb(), xR = .3f)),
+            listOf(
+                Move(FftCircle(side = "b"), xR = -.3f),
+                FftCircleWave(side = "b"),
+                Move(FftCircleWaveRgb(side = "b"), xR = .3f)
+            ),
+            listOf(
+                Move(FftCircle(side = "ab"), xR = -.3f),
+                FftCircleWave(side = "ab"),
+                Move(FftCircleWaveRgb(side = "ab"), xR = .3f)
+            ),
+            // Composition
             listOf(Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap)))),
             listOf(
                 Waveform().apply { paint.alpha = 150 },
