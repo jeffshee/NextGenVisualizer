@@ -5,28 +5,17 @@ import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
-class Rotate : Painter {
-    var painters: List<Painter>
+class Rotate(
+    vararg val painters: Painter,
     //
-    var pxR: Float
-    var pyR: Float
+    var pxR: Float = .5f,
+    var pyR: Float = .5f,
     //
-    var rpm: Float
-    var offset: Float
+    var rpm: Float = 1f,
+    var offset: Float = 0f
+) : Painter() {
 
     override var paint = Paint()
-
-    constructor(painters: List<Painter>, pxR: Float = .5f, pyR: Float = .5f, rpm: Float = 1f, offset: Float = 0f) {
-        this.painters = painters
-        this.pxR = pxR
-        this.pyR = pyR
-        this.rpm = rpm
-        this.offset = offset
-    }
-
-    constructor(painter: Painter, pxR: Float = .5f, pyR: Float = .5f, rpm: Float = 1f, offset: Float = 0f) : this(
-        listOf(painter), pxR, pyR, rpm, offset
-    )
 
     private var rot: Float = 0f
 

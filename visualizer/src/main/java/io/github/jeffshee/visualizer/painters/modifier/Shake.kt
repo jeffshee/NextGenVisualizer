@@ -6,40 +6,23 @@ import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
-class Shake : Painter {
-    var painters: List<Painter>
+class Shake(
+    vararg val painters: Painter,
     //
-    var animX: ValueAnimator
-    var animY: ValueAnimator
+    var animX: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
+        duration = 16000;repeatCount = ValueAnimator.INFINITE
+    },
+    var animY: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
+        duration = 8000;repeatCount = ValueAnimator.INFINITE
+    }
+) : Painter() {
 
     override var paint = Paint()
 
-    constructor(
-        painters: List<Painter>,
-        animX: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
-            duration = 16000;repeatCount = ValueAnimator.INFINITE
-        },
-        animY: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
-            duration = 8000;repeatCount = ValueAnimator.INFINITE
-        }
-    ) {
-        this.painters = painters
-        this.animX = animX
-        this.animY = animY
+    init {
         animX.start()
         animY.start()
     }
-
-    constructor(
-        painter: Painter,
-        animX: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
-            duration = 16000;repeatCount = ValueAnimator.INFINITE
-        },
-        animY: ValueAnimator = ValueAnimator.ofFloat(0f, .01f, 0f, -.01f, 0f).apply {
-            duration = 8000;repeatCount = ValueAnimator.INFINITE
-        }
-    ) : this(listOf(painter), animX, animY)
-
 
     override fun calc(helper: VisualizerHelper) {
         painters.forEach { painter ->

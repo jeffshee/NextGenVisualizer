@@ -5,23 +5,15 @@ import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
-class Move : Painter {
-    var painters: List<Painter>
+class Move(
     //
-    var xR: Float
-    var yR: Float
+    vararg val painters: Painter,
+    //
+    var xR: Float = 0f,
+    var yR: Float = 0f
+) : Painter() {
 
     override var paint = Paint()
-
-    constructor(painters: List<Painter>, xR: Float = 0f, yR: Float = 0f) {
-        this.painters = painters
-        this.xR = xR
-        this.yR = yR
-    }
-
-    constructor(painter: Painter, xR: Float = 0f, yR: Float = 0f) : this(
-        listOf(painter), xR, yR
-    )
 
     override fun calc(helper: VisualizerHelper) {
         painters.forEach { painter ->

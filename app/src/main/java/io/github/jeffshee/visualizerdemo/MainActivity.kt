@@ -71,58 +71,56 @@ class MainActivity : AppCompatActivity() {
         circleBitmap = SimpleIcon.getCircledBitmap(bitmap)
 
         helper = VisualizerHelper(0)
-        val painterLists = listOf(
+        val list = listOf(
             // Basic components
-            listOf(
+            Compose(
                 Move(Waveform(), yR = -.3f),
                 Move(FftBar(), yR = -.1f),
                 Move(FftLine(), yR = .1f),
                 Move(FftWave(), yR = .3f),
                 Move(FftWaveRgb(), yR = .5f)
             ),
-            listOf(
+            Compose(
                 Move(FftBar(side = "b"), yR = -.3f),
                 Move(FftLine(side = "b"), yR = -.1f),
                 Move(FftWave(side = "b"), yR = .1f),
                 Move(FftWaveRgb(side = "b"), yR = .3f)
             ),
-            listOf(
+            Compose(
                 Move(FftBar(side = "ab"), yR = -.3f),
                 Move(FftLine(side = "ab"), yR = -.1f),
                 Move(FftWave(side = "ab"), yR = .1f),
                 Move(FftWaveRgb(side = "ab"), yR = .3f)
             ),
             // Basic components (Circle)
-            listOf(Move(FftCircle(), xR = -.3f), FftCircleWave(), Move(FftCircleWaveRgb(), xR = .3f)),
-            listOf(
+            Compose(Move(FftCircle(), xR = -.3f), FftCircleWave(), Move(FftCircleWaveRgb(), xR = .3f)),
+            Compose(
                 Move(FftCircle(side = "b"), xR = -.3f),
                 FftCircleWave(side = "b"),
                 Move(FftCircleWaveRgb(side = "b"), xR = .3f)
             ),
-            listOf(
+            Compose(
                 Move(FftCircle(side = "ab"), xR = -.3f),
                 FftCircleWave(side = "ab"),
                 Move(FftCircleWaveRgb(side = "ab"), xR = .3f)
             ),
             // Composition
-            listOf(Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap)))),
-            listOf(
+            Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap))),
+            Compose(
                 Waveform().apply { paint.alpha = 150 },
                 Shake(Preset.getPresetWithBitmap("cWaveRgbIcon", circleBitmap)).apply {
                     animX.duration = 1000
                     animY.duration = 2000
                 }),
-            listOf(
+            Compose(
                 Preset.getPresetWithBitmap("liveBg", background),
                 FftCircle().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND }
             )
         )
-        visual.setPainterList(
-            helper, painterLists[current]
-        )
+        visual.setup(helper, list[current])
         visual.setOnLongClickListener {
-            if (current < painterLists.lastIndex) current++ else current = 0
-            visual.setPainterList(helper, painterLists[current])
+            if (current < list.lastIndex) current++ else current = 0
+            visual.setup(helper, list[current])
             true
         }
 

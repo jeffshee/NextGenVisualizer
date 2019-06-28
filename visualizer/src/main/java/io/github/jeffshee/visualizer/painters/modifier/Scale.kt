@@ -5,29 +5,17 @@ import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
-class Scale : Painter {
-    var painters: List<Painter>
+class Scale(
+    vararg val painters: Painter,
     //
-    var scaleX: Float
-    var scaleY: Float
+    var scaleX: Float = 1f,
+    var scaleY: Float = 1f,
     //
-    var pxR: Float
-    var pyR: Float
+    var pxR: Float = .5f,
+    var pyR: Float = .5f
+) : Painter() {
 
     override var paint = Paint()
-
-    constructor(painters: List<Painter>, scaleX: Float = 1f, scaleY: Float = 1f, pxR: Float = .5f, pyR: Float = .5f) {
-        this.painters = painters
-        this.scaleX = scaleX
-        this.scaleY = scaleY
-        this.pxR = pxR
-        this.pyR = pyR
-
-    }
-
-    constructor(painter: Painter, scaleX: Float = 1f, scaleY: Float = 1f, pxR: Float = .5f, pyR: Float = .5f) : this(
-        listOf(painter), scaleX, scaleY, pxR, pyR
-    )
 
     override fun calc(helper: VisualizerHelper) {
         painters.forEach { painter ->

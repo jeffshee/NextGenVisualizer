@@ -5,7 +5,7 @@ import android.graphics.Paint
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
-class Sequential(var painters: List<Painter>) : Painter() {
+class Compose(vararg val painters: Painter) : Painter() {
     override var paint = Paint()
 
     override fun calc(helper: VisualizerHelper) {

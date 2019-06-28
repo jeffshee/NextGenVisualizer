@@ -6,31 +6,17 @@ import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 import kotlin.random.Random
 
-class Glitch : Painter {
-
-    var painters: List<Painter>
+class Glitch(
+    vararg val painters: Painter,
     //
-    var startHz: Int
-    var endHz: Int
+    var startHz: Int = 60,
+    var endHz: Int = 300,
     //
-    var peak: Float = 50f
+    var peak: Float = 50f,
     var duration: Int = 200
+) : Painter() {
 
     override var paint = Paint()
-
-    constructor(
-        painters: List<Painter>, startHz: Int = 60, endHz: Int = 300
-    ) {
-        this.painters = painters
-        this.startHz = startHz
-        this.endHz = endHz
-    }
-
-    constructor(
-        painter: Painter, startHz: Int = 60, endHz: Int = 300
-    ) : this(
-        listOf(painter), startHz, endHz
-    )
 
     private val energy = GravityModel(0f)
     private var count = 0
@@ -55,7 +41,7 @@ class Glitch : Painter {
             canvas.save()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 canvas.clipOutRect(0f, y, width, y + h)
-            }else{
+            } else {
                 @Suppress("DEPRECATION")
                 canvas.clipRect(0f, y, width, y + h, Region.Op.DIFFERENCE)
             }
