@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import io.github.jeffshee.visualizer.painters.fft.*
+import io.github.jeffshee.visualizer.painters.misc.Background
+import io.github.jeffshee.visualizer.painters.misc.Gradient
 import io.github.jeffshee.visualizer.painters.misc.SimpleIcon
 import io.github.jeffshee.visualizer.painters.modifier.*
 import io.github.jeffshee.visualizer.painters.waveform.Waveform
@@ -72,6 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         helper = VisualizerHelper(0)
         val list = listOf(
+            Compose(Blend(FftWave(), Gradient())),
             // Basic components
             Compose(
                 Move(Waveform(), yR = -.3f),
