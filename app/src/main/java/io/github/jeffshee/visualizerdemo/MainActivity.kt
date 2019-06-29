@@ -73,6 +73,10 @@ class MainActivity : AppCompatActivity() {
 
         helper = VisualizerHelper(0)
         val list = listOf(
+            Blend(
+                FftCBar(side = "ab", gapX = 8f).apply { paint.style = Paint.Style.FILL },
+                Gradient(preset = Gradient.SWEEP, hsv = true)
+            ),
             // Basic components
             Compose(
                 Move(WfmAnalog(), yR = -.3f),
