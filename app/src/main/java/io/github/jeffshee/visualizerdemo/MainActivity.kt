@@ -13,11 +13,10 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import io.github.jeffshee.visualizer.painters.fft.*
-import io.github.jeffshee.visualizer.painters.misc.Background
 import io.github.jeffshee.visualizer.painters.misc.Gradient
-import io.github.jeffshee.visualizer.painters.misc.SimpleIcon
+import io.github.jeffshee.visualizer.painters.misc.Icon
 import io.github.jeffshee.visualizer.painters.modifier.*
-import io.github.jeffshee.visualizer.painters.waveform.Waveform
+import io.github.jeffshee.visualizer.painters.waveform.WfmAnalog
 import io.github.jeffshee.visualizer.utils.Preset
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 import kotlinx.android.synthetic.main.activity_main.*
@@ -70,13 +69,13 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         background = BitmapFactory.decodeResource(resources, R.drawable.background)
         bitmap = BitmapFactory.decodeResource(resources, R.drawable.chino512)
-        circleBitmap = SimpleIcon.getCircledBitmap(bitmap)
+        circleBitmap = Icon.getCircledBitmap(bitmap)
 
         helper = VisualizerHelper(0)
         val list = listOf(
             // Basic components
             Compose(
-                Move(Waveform(), yR = -.3f),
+                Move(WfmAnalog(), yR = -.3f),
                 Move(FftBar(), yR = -.1f),
                 Move(FftLine(), yR = .1f),
                 Move(FftWave(), yR = .3f),
@@ -95,16 +94,16 @@ class MainActivity : AppCompatActivity() {
                 Move(FftWaveRgb(side = "ab"), yR = .3f)
             ),
             // Basic components (Circle)
-            Compose(Move(FftCircle(), xR = -.3f), FftCircleWave(), Move(FftCircleWaveRgb(), xR = .3f)),
+            Compose(Move(FftCLine(), xR = -.3f), FftCWave(), Move(FftCWaveRgb(), xR = .3f)),
             Compose(
-                Move(FftCircle(side = "b"), xR = -.3f),
-                FftCircleWave(side = "b"),
-                Move(FftCircleWaveRgb(side = "b"), xR = .3f)
+                Move(FftCLine(side = "b"), xR = -.3f),
+                FftCWave(side = "b"),
+                Move(FftCWaveRgb(side = "b"), xR = .3f)
             ),
             Compose(
-                Move(FftCircle(side = "ab"), xR = -.3f),
-                FftCircleWave(side = "ab"),
-                Move(FftCircleWaveRgb(side = "ab"), xR = .3f)
+                Move(FftCLine(side = "ab"), xR = -.3f),
+                FftCWave(side = "ab"),
+                Move(FftCWaveRgb(side = "ab"), xR = .3f)
             ),
             //Blend
             Blend(
@@ -120,24 +119,24 @@ class MainActivity : AppCompatActivity() {
                 Gradient(preset = Gradient.LINEAR_VERTICAL_MIRROR, hsv = true)
             ),
             Blend(
-                FftCircle().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND },
+                FftCLine().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND },
                 Gradient(preset = Gradient.RADIAL)
             ),
             Blend(
-                FftCircle().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND },
+                FftCLine().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND },
                 Gradient(preset = Gradient.SWEEP, hsv = true)
             ),
             // Composition
             Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap))),
             Compose(
-                Waveform().apply { paint.alpha = 150 },
+                WfmAnalog().apply { paint.alpha = 150 },
                 Shake(Preset.getPresetWithBitmap("cWaveRgbIcon", circleBitmap)).apply {
                     animX.duration = 1000
                     animY.duration = 2000
                 }),
             Compose(
                 Preset.getPresetWithBitmap("liveBg", background),
-                FftCircle().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND }
+                FftCLine().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND }
             )
         )
         visual.setup(helper, list[current])

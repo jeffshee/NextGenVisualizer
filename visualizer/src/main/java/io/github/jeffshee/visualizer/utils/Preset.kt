@@ -22,13 +22,13 @@ class Preset {
 
         fun getPresetWithBitmap(name: String, bitmap: Bitmap): Painter {
             return when (name) {
-                "cIcon" -> Compose(Rotate(FftCircle()), SimpleIcon(SimpleIcon.getCircledBitmap(bitmap)))
+                "cIcon" -> Compose(Rotate(FftCLine()), Icon(Icon.getCircledBitmap(bitmap)))
                 "cWaveRgbIcon" -> Compose(
-                    Rotate(FftCircleWaveRgb()),
-                    SimpleIcon(SimpleIcon.getCircledBitmap(bitmap)))
+                    Rotate(FftCWaveRgb()),
+                    Icon(Icon.getCircledBitmap(bitmap)))
                 "liveBg" -> Scale(Shake(Background(bitmap)), scaleX = 1.02f, scaleY = 1.02f)
-                "debug" -> SimpleIcon(bitmap)
-                else -> SimpleIcon(bitmap)
+                "debug" -> Icon(bitmap)
+                else -> Icon(bitmap)
             }
         }
     }

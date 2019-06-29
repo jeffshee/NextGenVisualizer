@@ -4,7 +4,7 @@ import android.graphics.*
 import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 
-class FftCircleWaveRgb(
+class FftCWaveRgb(
     flags: Int = Paint.ANTI_ALIAS_FLAG,
     var color: List<Int> = listOf(Color.RED, Color.GREEN, Color.BLUE),
     //
@@ -24,7 +24,7 @@ class FftCircleWaveRgb(
 ) : Painter() {
 
     override var paint: Paint = Paint()
-    private val wave = FftCircleWave(Paint(flags).apply {
+    private val wave = FftCWave(Paint(flags).apply {
         style = Paint.Style.FILL;xfermode = PorterDuffXfermode(PorterDuff.Mode.ADD)
     }, startHz, endHz, num, interpolator, side, mirror, power, radiusR, ampR)
 

@@ -59,13 +59,13 @@ class VisualizerHelper(sessionId: Int) {
     }
 
     /**
-     * Log Waveform and Fft values every 1s
+     * Log WfmAnalog and Fft values every 1s
      */
     fun startDebug() {
         handler = Handler()
         runnable = object : Runnable {
             override fun run() {
-                Log.d("Waveform", getWave().contentToString())
+                Log.d("WfmAnalog", getWave().contentToString())
                 Log.d("Fft", getFftMagnitude().contentToString())
                 handler.postDelayed(this, 1000)
             }

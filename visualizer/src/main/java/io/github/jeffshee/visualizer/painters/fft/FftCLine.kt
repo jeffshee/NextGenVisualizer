@@ -9,7 +9,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction
 import kotlin.math.PI
 import kotlin.math.min
 
-class FftCircle(
+class FftCLine(
     override var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE;style = Paint.Style.STROKE;strokeWidth = 2f
     },

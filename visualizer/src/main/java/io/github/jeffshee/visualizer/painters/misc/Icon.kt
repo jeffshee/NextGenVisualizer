@@ -5,7 +5,7 @@ import io.github.jeffshee.visualizer.painters.Painter
 import io.github.jeffshee.visualizer.utils.VisualizerHelper
 import kotlin.math.min
 
-class SimpleIcon(
+class Icon(
     var bitmap: Bitmap,
     //
     var radiusR: Float = .3f,
