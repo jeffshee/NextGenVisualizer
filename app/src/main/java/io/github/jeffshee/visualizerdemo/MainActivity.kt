@@ -74,7 +74,6 @@ class MainActivity : AppCompatActivity() {
 
         helper = VisualizerHelper(0)
         val list = listOf(
-            Compose(Blend(FftWave(), Gradient())),
             // Basic components
             Compose(
                 Move(Waveform(), yR = -.3f),
@@ -106,6 +105,27 @@ class MainActivity : AppCompatActivity() {
                 Move(FftCircle(side = "ab"), xR = -.3f),
                 FftCircleWave(side = "ab"),
                 Move(FftCircleWaveRgb(side = "ab"), xR = .3f)
+            ),
+            //Blend
+            Blend(
+                FftLine().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND },
+                Gradient(preset = Gradient.LINEAR_HORIZONTAL)
+            ),
+            Blend(
+                FftLine().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND },
+                Gradient(preset = Gradient.LINEAR_VERTICAL, hsv = true)
+            ),
+            Blend(
+                FftLine().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND },
+                Gradient(preset = Gradient.LINEAR_VERTICAL_MIRROR, hsv = true)
+            ),
+            Blend(
+                FftCircle().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND },
+                Gradient(preset = Gradient.RADIAL)
+            ),
+            Blend(
+                FftCircle().apply { paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND },
+                Gradient(preset = Gradient.SWEEP, hsv = true)
             ),
             // Composition
             Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap))),
